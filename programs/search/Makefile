@@ -10,7 +10,7 @@ OBJS = search.o $(SRC)/point_functions.o $(SRC)/hash_table.o $(SRC)/cube_table.o
 EXEC = search.out
 
 # Arguments for make run / make valgrind
-ARGS = -i ../../input_small_id -q ../../query_small_id -k 4 -L 5 -o ../../output_file -N 5 -R 350
+ARGS = -i inputFile -q queryFile -k 4 -L 3 -M 100 -probes 10 -o outputFile -algorithm Frechet -metric discrete -delta 1.2
 
 $(EXEC): $(OBJS) $(LIBS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(EXEC) $(LDFLAGS)
