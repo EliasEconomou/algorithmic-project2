@@ -301,6 +301,7 @@ long int compute_IDvalue(std::vector<int> hValues, LSH_hash_info *hInfo)
     for (int i = 0; i < k; i++) {
         long int sum = r[i]*hValues[i];
         ID += modulo(sum,M);
+        ID = modulo(ID,M);
     }
     cout << " ----  ID = " << ID << " " ;
     return ID;
