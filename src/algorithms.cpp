@@ -83,7 +83,7 @@ pair<Point,double> lsh_approximate_NN(Point q, vector<HashTable> hashTables, LSH
         // Find g value for query point.
         vector<int> hValues;
         int k = hInfo->get_k();
-        vector<int> vp = q.vpoint;
+        vector<double> vp = q.vpoint;
         for (int j = 0; j < k; j++)
         {
             hValues.push_back(compute_hValue(j, vp, hInfo));
@@ -129,7 +129,7 @@ set<pair<Point,double>, CompDist> lsh_approximate_nNN(Point q, int N, vector<Has
         // Find g value for query point.
         vector<int> hValues;
         int k = hInfo->get_k();
-        vector<int> vp = q.vpoint;
+        vector<double> vp = q.vpoint;
         for (int j = 0; j < k; j++)
         {
             hValues.push_back(compute_hValue(j, vp, hInfo));
@@ -168,10 +168,10 @@ set<pair<Point,double>, CompDist> lsh_approximate_nNN(Point q, int N, vector<Has
 }
 
 
-unordered_map<int,double> lsh_approximate_range_search(Point q, double R, vector<HashTable> hashTables, LSH_hash_info *hInfo)
+unordered_map<string,double> lsh_approximate_range_search(Point q, double R, vector<HashTable> hashTables, LSH_hash_info *hInfo)
 {
     // Initialise an unordered map two hold points-distances inside radius r.
-    unordered_map<int,double> rPoints;
+    unordered_map<string,double> rPoints;
     int L = hInfo->get_L();
     for (int i = 0; i < L; i++) {
         // Update hinfo with the right vectors for every hash table, to compute query's g-value
@@ -181,7 +181,7 @@ unordered_map<int,double> lsh_approximate_range_search(Point q, double R, vector
         // Find g value for query point.
         vector<int> hValues;
         int k = hInfo->get_k();
-        vector<int> vp = q.vpoint;
+        vector<double> vp = q.vpoint;
         for (int j = 0; j < k; j++)
         {
             hValues.push_back(compute_hValue(j, vp, hInfo));
@@ -240,7 +240,7 @@ pair<Point,double> cube_approximate_NN(Point q, CubeTable cubeTable, CUBE_hash_i
     // Find g value for query point.
     vector<int> hValues;
     int k = hInfo->get_k();
-    vector<int> vp = q.vpoint;
+    vector<double> vp = q.vpoint;
     for (int i = 0; i < k; i++)
     {
         hValues.push_back(compute_hValue(i, vp, hInfo));
@@ -335,7 +335,7 @@ set<pair<Point,double>, CompDist> cube_approximate_nNN(Point q, int N, CubeTable
     // Find g value for query point.
     vector<int> hValues;
     int k = hInfo->get_k();
-    vector<int> vp = q.vpoint;
+    vector<double> vp = q.vpoint;
     for (int i = 0; i < k; i++)
     {
         hValues.push_back(compute_hValue(i, vp, hInfo));
@@ -432,10 +432,10 @@ set<pair<Point,double>, CompDist> cube_approximate_nNN(Point q, int N, CubeTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-std::unordered_map<int,double> cube_approximate_range_search(Point q, double R, CubeTable cubeTable, CUBE_hash_info *hInfo)
+std::unordered_map<string,double> cube_approximate_range_search(Point q, double R, CubeTable cubeTable, CUBE_hash_info *hInfo)
 {
     // Initialise an unordered map two hold points-distances inside radius r.
-    unordered_map<int,double> rPoints;
+    unordered_map<string,double> rPoints;
 
     // Update hinfo with the right vectors for hash table, to compute query's g-value
     hInfo->update_v(cubeTable.v);
@@ -443,7 +443,7 @@ std::unordered_map<int,double> cube_approximate_range_search(Point q, double R, 
     // Find g value for query point.
     vector<int> hValues;
     int k = hInfo->get_k();
-    vector<int> vp = q.vpoint;
+    vector<double> vp = q.vpoint;
     for (int i = 0; i < k; i++)
     {
         hValues.push_back(compute_hValue(i, vp, hInfo));

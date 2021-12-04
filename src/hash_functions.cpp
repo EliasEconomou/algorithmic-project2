@@ -6,7 +6,7 @@ using namespace std;
 // Returns w
 int compute_w(void)
 {
-    return 250;
+    return 10;
 }
 
 
@@ -224,7 +224,7 @@ int CUBE_hash_info::get_probes()
 
 
 // Returns an h-value.
-int compute_hValue(int i, vector<int> p, LSH_hash_info *hInfo)
+int compute_hValue(int i, vector<double> p, LSH_hash_info *hInfo)
 {
     int hValue;
     vector<vector<double> > v = hInfo->get_v();
@@ -241,7 +241,7 @@ int compute_hValue(int i, vector<int> p, LSH_hash_info *hInfo)
     return hValue;
 }
 
-int compute_hValue(int i, vector<int> p, CUBE_hash_info *hInfo)
+int compute_hValue(int i, vector<double> p, CUBE_hash_info *hInfo)
 {
     int hValue;
     vector<vector<double> > v = hInfo->get_v();
@@ -314,7 +314,7 @@ long int compute_IDvalue(std::vector<int> hValues, LSH_hash_info *hInfo)
 int compute_gValue(long int ID, int bucketNumber) //lsh
 {
     int g = modulo(ID,bucketNumber);
-    cout << " ----  g = " << g << " " << endl;
+    cout << " ----  g = " << g << ". " << endl;
     return g;
 }
 

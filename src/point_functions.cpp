@@ -30,7 +30,7 @@ Vector_of_points parsing(string fileName){
 
         line_stringstream >> word; // Read first word - index_ID
    
-        p.itemID = stod(word);
+        p.itemID = word;
         while(line_stringstream >> word) {
             
             p.vpoint.push_back(stod(word));
@@ -58,7 +58,7 @@ Vector_of_points parsing(string fileName){
 
 
 // Compute distance between vectors. L=1 for manhattan, L=2 for euclidian.
-double distance(vector<int> v1, vector<int> v2, int L)
+double distance(vector<double> v1, vector<double> v2, int L)
 {
     int v1Dim = v1.size();
     int v2Dim = v2.size();

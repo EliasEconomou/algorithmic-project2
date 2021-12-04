@@ -22,7 +22,7 @@ void CubeTable::CTinsert(Point *p, CUBE_hash_info *hInfo)
   hInfo->update_v(this->v);
   hInfo->update_t(this->t);
   int k = hInfo->get_k();
-  vector<int> vp = p->vpoint;
+  vector<double> vp = p->vpoint;
   for (int i = 0; i < k; i++)
   {
     hValues.push_back(compute_hValue(i, vp, hInfo));

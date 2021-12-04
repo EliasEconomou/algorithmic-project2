@@ -24,7 +24,8 @@ void HashTable::HTinsert(Point *p, LSH_hash_info *hInfo)
   hInfo->update_t(this->t);
   hInfo->update_r(this->r);
   int k = hInfo->get_k();
-  vector<int> vp = p->vpoint;
+  vector<double> vp = p->vpoint;
+  cout << p->itemID << "  ";
   for (int i = 0; i < k; i++)
   {
     hValues.push_back(compute_hValue(i, vp, hInfo));

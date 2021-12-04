@@ -75,8 +75,8 @@ public:
 
 
 // Returns a vector with k ints computed from k-h functions.
-int compute_hValue(int i, std::vector<int> p, LSH_hash_info *hInfo);
-int compute_hValue(int i, std::vector<int> p, CUBE_hash_info *hInfo);
+int compute_hValue(int i, std::vector<double> p, LSH_hash_info *hInfo);
+int compute_hValue(int i, std::vector<double> p, CUBE_hash_info *hInfo);
 
 
 // Returns the f value that corresponds to the h value given.

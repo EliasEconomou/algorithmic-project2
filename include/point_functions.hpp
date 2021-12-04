@@ -13,8 +13,8 @@
 class Point
 {
 public:
-    int itemID; //index id of point
-    std::vector<int> vpoint; //point-vector of coordinates
+    std::string itemID; //index id of point
+    std::vector<double> vpoint; //point-vector of coordinates
     
 };
 
@@ -49,7 +49,7 @@ class kplusplus_helper{
 Vector_of_points parsing(std::string);
 
 // Compute distance between vectors. L=1 for manhattan, L=2 for euclidian.
-double distance(std::vector<int> v1, std::vector<int> v2, int L);
+double distance(std::vector<double> v1, std::vector<double> v2, int L);
 
 // Compute the inner product between two vectors.
 double inner_prod(std::vector<int> v1, std::vector<double> v2);
