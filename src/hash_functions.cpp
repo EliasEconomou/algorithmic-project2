@@ -237,7 +237,7 @@ int compute_hValue(int i, vector<double> p, LSH_hash_info *hInfo)
     int w = hInfo->get_w();
     
     hValue = floor(pv - ti)/w;
-    cout << "h" << i << " = " << hValue << " ";
+    // cout << "h" << i << " = " << hValue << " ";
     return hValue;
 }
 
@@ -303,7 +303,7 @@ long int compute_IDvalue(std::vector<int> hValues, LSH_hash_info *hInfo)
         ID += modulo(sum,M);
         ID = modulo(ID,M);
     }
-    cout << " ----  ID = " << ID << " " ;
+    //cout << " ----  ID = " << ID << " " ;
     return ID;
 }
 
@@ -315,7 +315,7 @@ long int compute_IDvalue(std::vector<int> hValues, LSH_hash_info *hInfo)
 int compute_gValue(long int ID, int bucketNumber) //lsh
 {
     int g = modulo(ID,bucketNumber);
-    cout << " ----  g = " << g << ". " << endl;
+//    cout << " ----  g = " << g << ". " << endl;
     return g;
 }
 

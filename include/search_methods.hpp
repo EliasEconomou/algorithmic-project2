@@ -5,8 +5,9 @@
 #include <string>
 #include "point_functions.hpp"
 #include "hash_table.hpp"
+#include "cube_table.hpp"
 #include "hash_functions.hpp"
-// #include "algorithms.hpp"
+#include "algorithms.hpp"
 
 
 // Function for i) assigment using LSH.

@@ -1,4 +1,5 @@
 #include "../include/search_methods.hpp"
+#define MAX_HAMMING_DIST 10
 
 using namespace std;
 
@@ -63,6 +64,41 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
 
     // Vector_of_points queryData;
     // queryData = parsing(queryFile);
+
+    // ofstream out (outputFile);
+
+    // std::cout << "Writing to output file..." << endl;
+    // for (int i = 0; i < queryData.points.size(); i++)
+    // {
+    //     out << "Query: " << queryData.points[i].itemID << endl;
+    //     double lshTime, trueTime;
+    //     set<pair<Point,double>, CompDist> lshBestPointsDists;
+    //     set<pair<Point,double>, CompDist> trueBestPointsDists;
+    //     lshBestPointsDists = lsh_approximate_nNN(queryData.points[i], N, hashTables, &hInfo, lshTime);
+    //     trueBestPointsDists = true_nNN(queryData.points[i], N, inputData, trueTime);
+    //     int neighbor = 1;
+    //     auto it1 = lshBestPointsDists.begin();
+    //     auto it2 = trueBestPointsDists.begin();
+    //     for (it1,it2; it1 != lshBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
+    //     {
+    //         out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
+    //         out << "distanceLSH: " << it1->second << endl;
+    //         out << "distanceTrue: " << it2->second << endl;
+    //         neighbor++;
+    //     }
+    //     out << "tLSH: " << lshTime << endl;
+    //     out << "tTrue: " << trueTime << endl;
+    //     unordered_map<int,double> PointsInR = lsh_approximate_range_search(queryData.points[i], R, hashTables, &hInfo);
+    //     out << "R-near neighbors:" << endl;
+    //     for (auto it = PointsInR.begin(); it != PointsInR.end(); ++it)
+    //     {
+    //         out << it->first << endl;
+    //     }
+    // }
+    // out << endl;
+    // out.close();
+
+    // std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
     
 }
 
@@ -70,6 +106,77 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
 void time_series_Hypercube(string inputFile, string queryFile, string outputFile, int k, int M, int probes)
 {
     cout << "time_series_Hypercube" << endl;
+    if (inputFile == "0")
+    {
+        cout << "Give path to input file: ";
+        cin >> inputFile;
+    }
+    
+
+    Vector_of_points inputData;
+    inputData = parsing(inputFile);
+    
+    int vectorsNumber = inputData.points.size();
+    int dimension = inputData.points[0].vpoint.size();
+    int bucketsNumber = pow(2,k);
+    CUBE_hash_info hInfo(k, dimension, M, probes, MAX_HAMMING_DIST);
+
+    CubeTable cubeTable(bucketsNumber);
+    cubeTable.v = compute_v(k,dimension);
+    cubeTable.t = compute_t(k);
+    for (int i = 0; i < vectorsNumber; i++)
+    {
+        cubeTable.CTinsert(&inputData.points[i], &hInfo);
+    }
+
+    // if (queryFile == "0")
+    // {
+    //     cout << "Give path to query file: ";
+    //     cin >> queryFile;
+    // }
+
+    // if (outputFile == "0")
+    // {
+    //     cout << "Give path to output file: ";
+    //     cin >> outputFile;
+    // }
+    
+    // Vector_of_points queryData;
+    // queryData = parsing(queryFile);
+
+
+    // ofstream out (outputFile);
+
+    // std::cout << "Writing to output file..." << endl;
+    // for (int i = 0; i < queryData.points.size(); i++)
+    // {
+    //     out << "Query: " << queryData.points[i].itemID << endl;
+    //     double cubeTime, trueTime;
+    //     set<pair<Point,double>, CompDist> cubeBestPointsDists;
+    //     set<pair<Point,double>, CompDist> trueBestPointsDists;
+    //     cubeBestPointsDists = cube_approximate_nNN(queryData.points[i], N, cubeTable, &hInfo, cubeTime);
+    //     trueBestPointsDists = true_nNN(queryData.points[i], N, inputData, trueTime);
+    //     int neighbor = 1;
+    //     auto it1 = cubeBestPointsDists.begin();
+    //     auto it2 = trueBestPointsDists.begin();
+    //     for (it1,it2; it1 != cubeBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
+    //     {
+    //         out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
+    //         out << "distanceHypercube: " << it1->second << endl;
+    //         out << "distanceTrue: " << it2->second << endl;
+    //         neighbor++;
+    //     }
+    //     out << "tHypercube: " << cubeTime << endl;
+    //     out << "tTrue: " << trueTime << endl;
+    //     unordered_map<int,double> PointsInR = cube_approximate_range_search(queryData.points[i], R, cubeTable, &hInfo);
+    //     out << "R-near neighbors:" << endl;
+    //     for (auto it = PointsInR.begin(); it != PointsInR.end(); ++it)
+    //     {
+    //         out << it->first << endl;
+    //     }
+    // }
+    // out << endl;
+    // out.close();
 }
 
 // Function for ii) assigment using Discrete Ferchet.

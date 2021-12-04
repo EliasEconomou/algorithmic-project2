@@ -11,7 +11,7 @@ EXEC = search.out
 
 # Arguments for make run / make valgrind
 # ARGS = -i inputFile -q queryFile -k 4 -L 3 -M 100 -probes 10 -o outputFile -algorithm Frechet -metric discrete -delta 1.2
-ARGS = -i ../../nasdaq2017_LQ.csv -q ../../queryFile -k 4 -L 3 -M 100 -probes 10 -o ../../outputFile -algorithm LSH
+ARGS = -i ../../nasdaq2017_LQ.csv -q ../../queryFile -k 4 -L 3 -M 100 -probes 10 -o ../../outputFile -algorithm Hypercube
 
 $(EXEC): $(OBJS) $(LIBS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(EXEC) $(LDFLAGS)
