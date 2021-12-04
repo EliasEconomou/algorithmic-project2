@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 
     for (int i = 1; i < argc; i+=2) //argument options always start with '-'
     {
-        if (argv[i][0]!='-')
+        if ((argv[i][0]!='-') || (argv[i+1]==NULL))
         {
             cout << "Error: Wrong argument." << endl;
             return -1;
@@ -183,7 +183,6 @@ int main(int argc, char** argv) {
         {
             time_series_ContinuousFrechet();
         }
-        
     }
     
     
