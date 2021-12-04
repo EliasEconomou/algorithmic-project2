@@ -7,6 +7,7 @@
 #include "../../include/hash_table.hpp"
 #include "../../include/hash_functions.hpp"
 #include "../../include/algorithms.hpp"
+#include "../../include/search_methods.hpp"
 
 
 using namespace std;
@@ -14,12 +15,21 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    string inputFile, queryFile, outputFile, algorithm, metric="NULL";
+    string inputFile="0", queryFile="0", outputFile="0", algorithm="NULL", metric="NULL";
     int k=-1; //k will get a default value later according to algorithm given
     int L=5, M=10, probes=2;
-    double delta=0.0;
+    double delta=-1;
     string word;
 
+    for (int i = 1; i < argc; i+=2) //argument options always start with '-'
+    {
+        if (argv[i][0]!='-')
+        {
+            cout << "Error: Wrong argument." << endl;
+            return -1;
+        }
+    }
+    
     //---Parse arguments---
     for (int i = 1; i < argc; i++){
         word  = argv[i];
@@ -35,7 +45,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 queryFile = argv[++i];
             }else{
-                cout << "No argument for configuration file." << endl;
+                cout << "No argument for query file." << endl;
                 return -1;
             }
         }
@@ -43,7 +53,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 k = stoi(argv[++i]);
             }else{
-                cout << "No argument for k value." << endl;
+                cout << "Error: No argument for k value." << endl;
                 return -1;
             }
         }
@@ -51,7 +61,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 L = stoi(argv[++i]);
             }else{
-                cout << "No argument for L value." << endl;
+                cout << "Error: No argument for L value." << endl;
                 return -1;
             }
         }
@@ -59,7 +69,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 M = stoi(argv[++i]);
             }else{
-                cout << "No argument for M value." << endl;
+                cout << "Error: No argument for M value." << endl;
                 return -1;
             }
         }
@@ -67,7 +77,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 probes = stoi(argv[++i]);
             }else{
-                cout << "No argument for probes value." << endl;
+                cout << "Error: No argument for probes value." << endl;
                 return -1;
             }
         }
@@ -75,7 +85,7 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 outputFile = argv[++i];
             }else{
-                cout << "No argument for output file." << endl;
+                cout << "Error: No argument for output file." << endl;
                 return -1;
             }
         }
@@ -84,12 +94,12 @@ int main(int argc, char** argv) {
                 algorithm = argv[++i];
                 if ((algorithm!="LSH") && (algorithm!="Hypercube") && (algorithm!="Frechet"))
                 {
-                    cout << "Wrong algorithm argument given." << endl;
+                    cout << "Error: Wrong algorithm argument given." << endl;
                     return -1;
                 }
                 
             }else{
-                cout << "No argument for algorithm method." << endl;
+                cout << "Error: No argument for algorithm method." << endl;
                 return -1;
             }
         }
@@ -98,7 +108,7 @@ int main(int argc, char** argv) {
                 metric = argv[++i];
                 if ((metric!="discrete") && (metric!="continuous"))
                 {
-                    cout << "Wrong metric argument given." << endl;
+                    cout << "Error: Wrong metric argument given." << endl;
                     return -1;
                 }
             }
@@ -107,24 +117,37 @@ int main(int argc, char** argv) {
             if(i+1 <= argc){
                 delta = stod(argv[++i]);
             }else{
-                cout << "No argument for delta value." << endl;
+                cout << "Error: No argument for delta value." << endl;
                 return -1;
             }
         }
         else{
 
-            cout << "Error in arguments." << " Wrong argument: " << word << endl;
+            cout << "Error: Wrong argument." << word << endl;
             return -1;
         }
     }
-    if ((algorithm == "Frechet") && (metric == "NULL")) //Frechet must be discrete/continuous
+    if (algorithm == "NULL")
     {
-        cout << "No metric for Frechet given." << endl;
+        cout << "Error: Algorithm is required." << endl;
         return -1;
+    }
+    
+    if (algorithm == "Frechet") //Frechet must be discrete/continuous and have a delta value
+    {   if (metric == "NULL")
+        {
+            cout << "Error: Metric is required for Frechet." << endl;
+            return -1;
+        }
+        if (delta == -1)
+        {
+            cout << "Error: Delta is required for Frechet." << endl;
+            return -1;
+        }
     }
     if (((algorithm == "LSH") || (algorithm == "Hypercube")) && (metric != "NULL"))
     {
-        cout << "LSH/Hypercube can't have Frechet metric." << endl;
+        cout << "Error: LSH/Hypercube can't have Frechet metric." << endl;
         return -1;
     }
     if (k==-1) //k not given - use default
@@ -135,9 +158,34 @@ int main(int argc, char** argv) {
             k=14;
     }
     
-    // cout << "inputFile = " << inputFile << ". queryFile = " << queryFile << ". k = " << k << ". L = " << L;
-    // cout << ". M = " << M << ". probes = " << probes << ". outputFile = " << outputFile << ". algorithm = " << algorithm;
-    // cout << ". metric = " << metric << ". delta = " << delta << "." << endl;
+    // Print arguments
+    cout << "inputFile = " << inputFile << ". queryFile = " << queryFile << ". k = " << k << ". L = " << L;
+    cout << ". M = " << M << ". probes = " << probes << ". outputFile = " << outputFile << ". algorithm = " << algorithm;
+    cout << ". metric = " << metric << ". delta = " << delta << "." << endl;
 
+
+    // Call appropriate function based on algorithm given.
+    if (algorithm == "LSH")
+    {
+        time_series_LSH();
+    }
+    else if (algorithm == "Hypercube")
+    {
+        time_series_Hypercube();
+    }
+    else if (algorithm == "Frechet")
+    {
+        if (metric == "discrete")
+        {
+            time_series_DiscreteFrechet();
+        }
+        else if (metric == "continuous")
+        {
+            time_series_ContinuousFrechet();
+        }
+        
+    }
+    
+    
 
 }
