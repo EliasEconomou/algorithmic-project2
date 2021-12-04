@@ -167,21 +167,21 @@ int main(int argc, char** argv) {
     // Call appropriate function based on algorithm given.
     if (algorithm == "LSH")
     {
-        time_series_LSH();
+        time_series_LSH(inputFile, queryFile, outputFile, k, L);
     }
     else if (algorithm == "Hypercube")
     {
-        time_series_Hypercube();
+        time_series_Hypercube(inputFile, queryFile, outputFile, k, M, probes);
     }
     else if (algorithm == "Frechet")
     {
         if (metric == "discrete")
         {
-            time_series_DiscreteFrechet();
+            time_series_DiscreteFrechet(inputFile, queryFile, outputFile, delta);
         }
         else if (metric == "continuous")
         {
-            time_series_ContinuousFrechet();
+            time_series_ContinuousFrechet(inputFile, queryFile, outputFile, delta);
         }
     }
     
