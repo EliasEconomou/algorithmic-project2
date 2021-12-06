@@ -6,7 +6,7 @@ CC = g++
 CFLAGS = -std=c++11 -Wall -g -Werror -I$(INCLUDE)
 LDFLAGS = -lm
 
-OBJS = search.o $(SRC)/point_functions.o $(SRC)/curve_functions.o $(SRC)/hash_table.o $(SRC)/cube_table.o $(SRC)/hash_functions.o $(SRC)/algorithms.o $(SRC)/search_methods.o
+OBJS = search.o $(SRC)/point_functions.o $(SRC)/curve_functions.o $(SRC)/hash_table.o $(SRC)/cube_table.o $(SRC)/hash_functions.o $(SRC)/algorithms.o $(SRC)/search_methods.o $(SRC)/grid_table.o
 EXEC = search.out
 
 # Arguments for make run / make valgrind

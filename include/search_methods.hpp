@@ -9,6 +9,7 @@
 #include "hash_functions.hpp"
 #include "algorithms.hpp"
 #include "curve_functions.hpp"
+#include "grid_table.hpp"
 
 
 // Function for i) assigment using LSH.
@@ -18,7 +19,7 @@ void time_series_LSH(std::string inputFile, std::string queryFile, std::string o
 void time_series_Hypercube(std::string inputFile, std::string queryFile, std::string outputFile, int k, int M, int probes);
 
 // Function for ii) assigment using Discrete Ferchet.
-void time_series_DiscreteFrechet(std::string inputFile, std::string queryFile, std::string outputFile, double delta);
+void time_series_DiscreteFrechet(std::string inputFile, std::string queryFile, std::string outputFile, int k, int L, double delta);
 
 // Function for iii) assigment using Continuous Frechet.
 void time_series_ContinuousFrechet(std::string inputFile, std::string queryFile, std::string outputFile, double delta);

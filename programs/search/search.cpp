@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
     }
     if (k==-1) //k not given - use default
     {
-        if (algorithm=="LSH")
+        if ((algorithm=="LSH") || (algorithm=="Frechet"))
             k=4;
         else if (algorithm=="Hypercube")
             k=14;
@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
     {
         if (metric == "discrete")
         {
-            time_series_DiscreteFrechet(inputFile, queryFile, outputFile, delta);
+            time_series_DiscreteFrechet(inputFile, queryFile, outputFile, k, L, delta);
         }
         else if (metric == "continuous")
         {

@@ -174,7 +174,7 @@ void time_series_Hypercube(string inputFile, string queryFile, string outputFile
 }
 
 // Function for ii) assigment using Discrete Ferchet.
-void time_series_DiscreteFrechet(string inputFile, string queryFile, string outputFile, double delta)
+void time_series_DiscreteFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta)
 {
     cout << "time_series_DiscreteFrechet" << endl;
     if (inputFile == "0")
@@ -186,15 +186,58 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     Vector_of_curves inputData;
     inputData = curve_parsing(inputFile);
 
+    // int dimension = inputData.curves[0].coordinates.size();
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     for (int j = 0; j < dimension; j++)
+    //     {
+    //         cout << "(" << inputData.curves[i].coordinates[j].first << " - " << inputData.curves[i].coordinates[j].second << ")" << "  ";
+    //     }
+    //     cout << endl << endl;
+    // }
+
+    int vectorsNumber = inputData.curves.size();
     int dimension = inputData.curves[0].coordinates.size();
-    for (int i = 0; i < 3; i++)
+    int bucketsNumber = vectorsNumber/8;
+    
+    // double arrayOfShifts[L]; //TODO delete
+    // for (int i = 0; i < L; i++)
+    // {
+    //     arrayOfShifts[i] = random_double(0,delta);
+    // }
+    
+    LSH_hash_info hInfo(k, dimension, L);
+
+    vector<GridTable> gridTables;
+    for (int i = 0; i < L; i++)
     {
-        for (int j = 0; j < dimension; j++)
-        {
-            cout << "(" << inputData.curves[i].coordinates[j].first << " - " << inputData.curves[i].coordinates[j].second << ")" << "  ";
-        }
-        cout << endl << endl;
+        GridTable gt(bucketsNumber, random_double(0,delta), delta, dimension);
+        gridTables.push_back(gt);
     }
+    
+    for (int i = 0; i < L; i++)
+    {
+        gridTables[i].v = compute_v(k,2*dimension);
+        gridTables[i].t = compute_t(k);
+        gridTables[i].r = compute_r(k);
+        for (int j = 0; j < vectorsNumber; j++)
+        {
+            gridTables[i].GridInsert(&inputData.curves[j], &hInfo);
+        }
+    }
+
+    if (queryFile == "0")
+    {
+        cout << "Give path to query file: ";
+        cin >> queryFile;
+    }
+
+    if (outputFile == "0")
+    {
+        cout << "Give path to output file: ";
+        cin >> outputFile;
+    }
+
 
 }
 
