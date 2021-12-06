@@ -6,7 +6,7 @@ using namespace std;
 // Returns w
 int compute_w(void)
 {
-    return 10;
+    return 50;
 }
 
 

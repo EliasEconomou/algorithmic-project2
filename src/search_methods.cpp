@@ -50,55 +50,49 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
         }
     }
 
-    // if (queryFile == "0")
-    // {
-    //     cout << "Give path to query file: ";
-    //     cin >> queryFile;
-    // }
+    if (queryFile == "0")
+    {
+        cout << "Give path to query file: ";
+        cin >> queryFile;
+    }
 
-    // if (outputFile == "0")
-    // {
-    //     cout << "Give path to output file: ";
-    //     cin >> outputFile;
-    // }
+    if (outputFile == "0")
+    {
+        cout << "Give path to output file: ";
+        cin >> outputFile;
+    }
 
-    // Vector_of_points queryData;
-    // queryData = parsing(queryFile);
+    Vector_of_points queryData;
+    queryData = parsing(queryFile);
 
-    // ofstream out (outputFile);
+    ofstream out (outputFile);
 
-    // std::cout << "Writing to output file..." << endl;
-    // for (int i = 0; i < queryData.points.size(); i++)
-    // {
-    //     out << "Query: " << queryData.points[i].itemID << endl;
-    //     double lshTime, trueTime;
-    //     set<pair<Point,double>, CompDist> lshBestPointsDists;
-    //     set<pair<Point,double>, CompDist> trueBestPointsDists;
-    //     lshBestPointsDists = lsh_approximate_nNN(queryData.points[i], N, hashTables, &hInfo, lshTime);
-    //     trueBestPointsDists = true_nNN(queryData.points[i], N, inputData, trueTime);
-    //     int neighbor = 1;
-    //     auto it1 = lshBestPointsDists.begin();
-    //     auto it2 = trueBestPointsDists.begin();
-    //     for (it1,it2; it1 != lshBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
-    //     {
-    //         out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
-    //         out << "distanceLSH: " << it1->second << endl;
-    //         out << "distanceTrue: " << it2->second << endl;
-    //         neighbor++;
-    //     }
-    //     out << "tLSH: " << lshTime << endl;
-    //     out << "tTrue: " << trueTime << endl;
-    //     unordered_map<int,double> PointsInR = lsh_approximate_range_search(queryData.points[i], R, hashTables, &hInfo);
-    //     out << "R-near neighbors:" << endl;
-    //     for (auto it = PointsInR.begin(); it != PointsInR.end(); ++it)
-    //     {
-    //         out << it->first << endl;
-    //     }
-    // }
-    // out << endl;
-    // out.close();
+    std::cout << "Writing to output file..." << endl;
+    for (int i = 0; i < queryData.points.size(); i++)
+    {
+        out << "Query: " << queryData.points[i].itemID << endl;
+        double lshTime, trueTime;
+        set<pair<Point,double>, CompDist> lshBestPointsDists;
+        set<pair<Point,double>, CompDist> trueBestPointsDists;
+        lshBestPointsDists = lsh_approximate_nNN(queryData.points[i], 1, hashTables, &hInfo, lshTime);
+        trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
+        int neighbor = 1;
+        auto it1 = lshBestPointsDists.begin();
+        auto it2 = trueBestPointsDists.begin();
+        for (it1,it2; it1 != lshBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
+        {
+            out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
+            out << "distanceLSH: " << it1->second << endl;
+            out << "distanceTrue: " << it2->second << endl;
+            neighbor++;
+        }
+        out << "tLSH: " << lshTime << endl;
+        out << "tTrue: " << trueTime << endl;
+    }
+    out << endl;
+    out.close();
 
-    // std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
+    std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
     
 }
 
@@ -183,6 +177,25 @@ void time_series_Hypercube(string inputFile, string queryFile, string outputFile
 void time_series_DiscreteFrechet(string inputFile, string queryFile, string outputFile, double delta)
 {
     cout << "time_series_DiscreteFrechet" << endl;
+    if (inputFile == "0")
+    {
+        cout << "Give path to input file: ";
+        cin >> inputFile;
+    }
+
+    Vector_of_curves inputData;
+    inputData = curve_parsing(inputFile);
+
+    int dimension = inputData.curves[0].coordinates.size();
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < dimension; j++)
+        {
+            cout << "(" << inputData.curves[i].coordinates[j].first << " - " << inputData.curves[i].coordinates[j].second << ")" << "  ";
+        }
+        cout << endl << endl;
+    }
+
 }
 
 // Function for iii) assigment using Continuous Frechet.

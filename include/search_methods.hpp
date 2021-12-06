@@ -8,6 +8,7 @@
 #include "cube_table.hpp"
 #include "hash_functions.hpp"
 #include "algorithms.hpp"
+#include "curve_functions.hpp"
 
 
 // Function for i) assigment using LSH.
