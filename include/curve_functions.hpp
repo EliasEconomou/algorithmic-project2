@@ -15,7 +15,7 @@ class Curve
 {
 public:
     std::string curveID; //index id of curve
-    std::vector<std::pair<double,int> > coordinates; //vector contains pairs of value/time - points in time series
+    std::vector<std::pair<double,double> > coordinates; //vector contains pairs of value/time - points in time series
 };
 
 class Vector_of_curves

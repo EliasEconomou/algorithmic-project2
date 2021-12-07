@@ -196,9 +196,9 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     //     cout << endl << endl;
     // }
 
-    int vectorsNumber = inputData.curves.size();
+    int curvesNumber = inputData.curves.size();
     int dimension = inputData.curves[0].coordinates.size();
-    int bucketsNumber = vectorsNumber/8;
+    int bucketsNumber = curvesNumber/8;
     
     // double arrayOfShifts[L]; //TODO delete
     // for (int i = 0; i < L; i++)
@@ -211,7 +211,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     vector<GridTable> gridTables;
     for (int i = 0; i < L; i++)
     {
-        GridTable gt(bucketsNumber, random_double(0,delta), delta, dimension);
+        GridTable gt(bucketsNumber, delta, dimension);
         gridTables.push_back(gt);
     }
     
@@ -220,7 +220,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
         gridTables[i].v = compute_v(k,2*dimension);
         gridTables[i].t = compute_t(k);
         gridTables[i].r = compute_r(k);
-        for (int j = 0; j < vectorsNumber; j++)
+        for (int j = 0; j < curvesNumber; j++)
         {
             gridTables[i].GridInsert(&inputData.curves[j], &hInfo);
         }

@@ -23,7 +23,7 @@ Vector_of_curves curve_parsing(string fileName){
     //getting line by line
     while(std::getline(file, line)) {
 
-        int t=1; // the second coordinate represents time and will be given as integer incremented by one for every point in curve-time series
+        double t=0.1; // the second coordinate represents time and will be given as integer incremented by one for every point in curve-time series
         
         //getting data from each line and creating vectors to store them
         istringstream line_stringstream(line);
@@ -36,7 +36,8 @@ Vector_of_curves curve_parsing(string fileName){
         while(line_stringstream >> word) {
             
             // p.vpoint.push_back(stod(word));
-            c.coordinates.push_back(make_pair(stod(word),t++));
+            c.coordinates.push_back(make_pair(stod(word),t));
+            t=t+0.1;
         }
 
         //Check if same size vectors are created
