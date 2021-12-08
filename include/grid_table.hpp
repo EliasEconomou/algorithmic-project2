@@ -22,9 +22,6 @@ class GridTable
 {
     int bucketsNumber;
     std::vector<std::list<GridNode>> lists; //a list for every bucket
-    Curve snapToGrid(Curve curve);
-    void padding(Curve *curve);
-    std::vector<double> hashToLSHvector(Curve curve);
     
 public:
     int dimension; //dimension of curves

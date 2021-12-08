@@ -9,6 +9,7 @@
 #include <vector>
 #include <utility>
 #include <random>
+#include "point_functions.hpp" //include to get euclidean distance
 
 
 class Curve
@@ -28,5 +29,8 @@ public:
 
 // Parse dataset and return a vector of dataset's vectors.
 Vector_of_curves curve_parsing(std::string);
+
+// Compute discrete frechet distance between curves.
+double discrete_frechet_distance (Curve c1, Curve c2);
 
 #endif

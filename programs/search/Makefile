@@ -10,7 +10,7 @@ OBJS = search.o $(SRC)/point_functions.o $(SRC)/curve_functions.o $(SRC)/hash_ta
 EXEC = search.out
 
 # Arguments for make run / make valgrind
-ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 5 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 7
+ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 5 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
 # ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 3 -M 100 -probes 10 -o ../../outputFile -algorithm LSH
 
 $(EXEC): $(OBJS) $(LIBS)

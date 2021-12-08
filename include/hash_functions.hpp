@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <functional>
 #include "point_functions.hpp"
+#include "curve_functions.hpp"
 
 
 class LSH_hash_info
@@ -102,6 +103,16 @@ std::vector<std::vector<double> > compute_v(int k, int d);
 
 // Returns the r vector to use in g function.
 std::vector<int> compute_r(int k);
+
+
+// Snaps a curve to a grid of two dimensions removing consecutive duplicates.
+Curve snapToGrid(Curve curve, std::pair<double,double> tShiftGrid, double delta);
+
+// Pads the snapped curve with a big number so that all curves are equally sized.
+void padding(Curve *curve, int dimension);
+
+// Produce the hash key from the snapped curve.
+std::vector<double> hashToLSHvector(Curve curve, int dimension);
 
 
 #endif

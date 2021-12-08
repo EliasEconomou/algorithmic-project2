@@ -13,6 +13,8 @@
 #include "hash_table.hpp"
 #include "cube_table.hpp"
 #include "hash_functions.hpp"
+#include "grid_table.hpp"
+#include "curve_functions.hpp"
 
 
 // Compare function to use in set.
@@ -49,6 +51,11 @@ std::pair<Point,double> cube_approximate_NN(Point q, CubeTable cubeTable, CUBE_h
 std::set<std::pair<Point,double>, CompDist> cube_approximate_nNN(Point q, int N, CubeTable cubeTable, CUBE_hash_info *hInfo, double &time);
 
 std::unordered_map<std::string,double> cube_approximate_range_search(Point q, double R, CubeTable cubeTable, CUBE_hash_info *hInfo);
+
+
+//DISCRETE FRECHET
+
+std::pair<Curve,double> lsh_approximate_NN(Curve q, std::vector<GridTable> gridTables, LSH_hash_info *hInfo);
 
 
 #endif

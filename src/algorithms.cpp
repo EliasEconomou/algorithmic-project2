@@ -520,3 +520,57 @@ std::unordered_map<string,double> cube_approximate_range_search(Point q, double 
     // Max HD reached.
     return rPoints;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DISCRETE FRECHET //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH_hash_info *hInfo)
+{
+    Curve c;
+    pair<Curve,double> best;
+    best.first = c; //best point-candidate
+    best.second = DBL_MAX; //best distance of best candidate
+
+    int L = hInfo->get_L();
+    for (int i = 0; i < L; i++) {
+        
+        Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+        padding(&grid_curve, gridTables[i].dimension);
+        vector<double> LSHvector = hashToLSHvector(grid_curve, gridTables[i].dimension);
+        // Update hinfo with the right vectors for every hash table, to compute query's g-value
+        hInfo->update_v(gridTables[i].v);
+        hInfo->update_t(gridTables[i].t);
+        hInfo->update_r(gridTables[i].r);
+        // Find g value for query point.
+        vector<int> hValues;
+        int k = hInfo->get_k();
+        for (int j = 0; j < k; j++)
+        {
+            hValues.push_back(compute_hValue(j, LSHvector, hInfo));
+            
+        }
+        long int ID = compute_IDvalue(hValues, hInfo);
+        int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
+        list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
+        typename list<GridNode>::iterator current;
+        for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
+            // if (ID != current->ID)
+            // {
+            //     continue;
+            // }
+
+            double dist = discrete_frechet_distance(q,*(current->curve));
+            cout << dist << endl;
+            if (dist < best.second)
+            {
+                best.second = dist;
+                best.first = *(current->curve);
+            }
+        }
+    }
+    return best;
+    
+}
