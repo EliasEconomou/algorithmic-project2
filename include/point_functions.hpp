@@ -71,13 +71,13 @@ class kplusplus_helper //helping class
 ////////////////////////////////////////////////////////    FUNCTIONS   ////////////////////////////////////////////////////////
 
 // Parse dataset and return a vector of dataset's vectors.
-Vector_of_curves curve_parsing(std::string);
+Vector_of_curves curve_parsing(std::string fileName, int dim);
 
 // Compute discrete frechet distance between curves.
 double discrete_frechet_distance (Curve c1, Curve c2);
 
 // Parse dataset and return a vector of dataset's vectors.
-Vector_of_points parsing(std::string);
+Vector_of_points parsing(std::string fileName);
 
 // Compute distance between vectors. L=1 for manhattan, L=2 for euclidian.
 double distance(std::vector<double> v1, std::vector<double> v2, int L);

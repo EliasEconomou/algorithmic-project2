@@ -10,6 +10,9 @@
 #include "point_functions.hpp"
 #include "hash_functions.hpp"
 
+#define EPSILON 0.1
+
+
 class GridNode
 {
 public:
@@ -24,14 +27,16 @@ class GridTable
     std::vector<std::list<GridNode>> lists; //a list for every bucket
     
 public:
-    int dimension; //dimension of curves
-    std::pair<double,double> tShiftGrid; //shift grid's y/x by this number
+    int gridDim; //dimension of grid
+    int curveDim; //dimension of curves (number of points)
+    std::pair<double,double> tShiftGrid; //shift grid's y/x by this number (2D grid)
+    double epsilon; //for filtering (1D grid)
     double delta;
     std::vector<double> t;
     std::vector<std::vector<double> > v; //k vectors to use to compute every h
     std::vector<int> r;
 
-    GridTable(int bucketsNumber, double delta, int dimension);
+    GridTable(int bucketsNumber, double delta, int curveDim, int gridDim);
     
     // Insert curve in grid
     void GridInsert(Curve *p, LSH_hash_info *hInfo);

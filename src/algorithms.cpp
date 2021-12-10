@@ -538,8 +538,8 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
     for (int i = 0; i < L; i++) {
         
         Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
-        padding(&grid_curve, gridTables[i].dimension);
-        vector<double> LSHvector = hashToLSHvector(grid_curve, gridTables[i].dimension);
+        padding(&grid_curve, gridTables[i].curveDim);
+        vector<double> LSHvector = hashToLSHvector(grid_curve, gridTables[i].curveDim);
         // Update hinfo with the right vectors for every hash table, to compute query's g-value
         hInfo->update_v(gridTables[i].v);
         hInfo->update_t(gridTables[i].t);
@@ -563,7 +563,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
             }
 
             double dist = discrete_frechet_distance(q,*(current->curve));
-            //cout << dist << endl;
+            // cout << dist << endl;
             if (dist < best.second)
             {
                 best.second = dist;

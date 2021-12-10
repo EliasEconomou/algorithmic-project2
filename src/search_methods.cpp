@@ -185,7 +185,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
 
     std::cout << "Parsing data file..." << endl;
     Vector_of_curves inputData;
-    inputData = curve_parsing(inputFile);
+    inputData = curve_parsing(inputFile, 2);
 
     int dimension = inputData.curves[0].cpoints.size();
     // for (int i = 0; i < 3; i++)
@@ -205,7 +205,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     vector<GridTable> gridTables;
     for (int i = 0; i < L; i++)
     {
-        GridTable gt(bucketsNumber, delta, dimension);
+        GridTable gt(bucketsNumber, delta, dimension, 2);
         gridTables.push_back(gt);
     }
     
@@ -234,7 +234,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     }
 
     Vector_of_curves queryData;
-    queryData = curve_parsing(queryFile);
+    queryData = curve_parsing(queryFile, 2);
 
     ofstream out (outputFile);
 
@@ -258,7 +258,67 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
 }
 
 // Function for iii) assigment using Continuous Frechet.
-void time_series_ContinuousFrechet(string inputFile, string queryFile, string outputFile, double delta)
+void time_series_ContinuousFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta)
 {
     cout << "time_series_ContinuousFrechet" << endl;
+    if (inputFile == "0")
+    {
+        cout << "Give path to input file: ";
+        cin >> inputFile;
+    }
+
+    std::cout << "Parsing data file..." << endl;
+    Vector_of_curves inputData;
+    inputData = curve_parsing(inputFile, 1);
+
+    int dimension = inputData.curves[0].cpoints.size();
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     for (int j = 0; j < dimension; j++)
+    //     {
+    //         cout << "(" << inputData.curves[i].cpoints[j].vpoint[0] << ")" << "  ";
+    //     }
+    //     cout << endl << endl;
+    // }
+
+    int curvesNumber = inputData.curves.size();
+    int bucketsNumber = curvesNumber/8;
+    
+    LSH_hash_info hInfo(k, dimension, L);
+
+    vector<GridTable> gridTables;
+    for (int i = 0; i < L; i++)
+    {
+        GridTable gt(bucketsNumber, delta, dimension, 1);
+        gridTables.push_back(gt);
+    }
+    
+    std::cout << "Storing data in hash tables..." << endl;
+    for (int i = 0; i < L; i++)
+    {
+        gridTables[i].v = compute_v(k,dimension);
+        gridTables[i].t = compute_t(k);
+        gridTables[i].r = compute_r(k);
+        for (int j = 0; j < curvesNumber; j++)
+        {
+            gridTables[i].GridInsert(&inputData.curves[j], &hInfo);
+        }
+    }
+
+    if (queryFile == "0")
+    {
+        cout << "Give path to query file: ";
+        cin >> queryFile;
+    }
+
+    if (outputFile == "0")
+    {
+        cout << "Give path to output file: ";
+        cin >> outputFile;
+    }
+
+    Vector_of_curves queryData;
+    queryData = curve_parsing(queryFile, 1);
+
+
 }

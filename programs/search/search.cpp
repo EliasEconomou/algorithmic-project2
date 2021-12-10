@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
         }
         else if (metric == "continuous")
         {
-            time_series_ContinuousFrechet(inputFile, queryFile, outputFile, delta);
+            time_series_ContinuousFrechet(inputFile, queryFile, outputFile, k, L, delta);
         }
     }
     

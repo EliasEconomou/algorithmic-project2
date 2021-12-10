@@ -165,7 +165,7 @@ long int modulo(long int a, long long int b)
 
 
 // Parse dataset and return a vector of dataset's vectors.
-Vector_of_curves curve_parsing(string fileName){
+Vector_of_curves curve_parsing(string fileName, int dim){
     
     Vector_of_curves data;
 
@@ -180,46 +180,90 @@ Vector_of_curves curve_parsing(string fileName){
 
     //sizelim : a size keeping variable to help with keeping consistent amount of dimentions
     int sizelim = 0;
+    if (dim == 2) // time is an issue here
+    {
+        //getting line by line
+        while(std::getline(file, line)) {
 
-    //getting line by line
-    while(std::getline(file, line)) {
+            double t=1; // the second coordinate represents time and will be given as integer incremented by one for every point in curve-time series
+            int point_id=1;
 
-        double t=1; // the second coordinate represents time and will be given as integer incremented by one for every point in curve-time series
-        int point_id=1;
+            //getting data from each line and creating vectors to store them
+            istringstream line_stringstream(line);
+            string word;
+            Curve c;
 
-        //getting data from each line and creating vectors to store them
-        istringstream line_stringstream(line);
-        string word;
-        Curve c;
+            line_stringstream >> word; // Read first word - index_ID
+    
+            c.curveID = word;
+            while(line_stringstream >> word) {
+                
+                //c.coordinates.push_back(make_pair(stod(word),t));
+                Point p;
+                p.itemID = to_string(point_id);
+                p.vpoint.push_back(stod(word));
+                p.vpoint.push_back(t);
+                c.cpoints.push_back(p);
+                point_id++;
+                t=t+1;
+            }
 
-        line_stringstream >> word; // Read first word - index_ID
-   
-        c.curveID = word;
-        while(line_stringstream >> word) {
+            //Check if same size curves are created
+            if (sizelim==0){
+                sizelim=c.cpoints.size();
+            }
+            if (c.cpoints.size()!=sizelim){
+                cout << "Error with input file - inconsistent record size. \n";
+                exit(-1);
+            }
+
+            //Add newly created point to data
+            data.curves.push_back(c);
             
-            //c.coordinates.push_back(make_pair(stod(word),t));
-            Point p;
-            p.itemID = to_string(point_id);
-            p.vpoint.push_back(stod(word));
-            p.vpoint.push_back(t);
-            c.cpoints.push_back(p);
-            point_id++;
-            t=t+1;
         }
-
-        //Check if same size curves are created
-        if (sizelim==0){
-            sizelim=c.cpoints.size();
-        }
-        if (c.cpoints.size()!=sizelim){
-            cout << "Error with input file - inconsistent record size. \n";
-            exit(-1);
-        }
-
-        //Add newly created point to data
-        data.curves.push_back(c);
-        
     }
+    else if (dim == 1)
+    {
+        //getting line by line
+        while(std::getline(file, line)) {
+
+            int point_id=1;
+
+            //getting data from each line and creating vectors to store them
+            istringstream line_stringstream(line);
+            string word;
+            Curve c;
+
+            line_stringstream >> word; // Read first word - index_ID
+    
+            c.curveID = word;
+            while(line_stringstream >> word) {
+                
+                //c.coordinates.push_back(make_pair(stod(word),t));
+                Point p;
+                p.itemID = to_string(point_id);
+                p.vpoint.push_back(stod(word));
+                c.cpoints.push_back(p);
+                point_id++;
+            }
+
+            //Check if same size curves are created
+            if (sizelim==0){
+                sizelim=c.cpoints.size();
+            }
+            if (c.cpoints.size()!=sizelim){
+                cout << "Error with input file - inconsistent record size. \n";
+                exit(-1);
+            }
+
+            //Add newly created point to data
+            data.curves.push_back(c);
+            
+        }
+    }
+    
+    
+    
     file.close();
     return data;
 }

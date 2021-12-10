@@ -21,6 +21,6 @@ void time_series_Hypercube(std::string inputFile, std::string queryFile, std::st
 void time_series_DiscreteFrechet(std::string inputFile, std::string queryFile, std::string outputFile, int k, int L, double delta);
 
 // Function for iii) assigment using Continuous Frechet.
-void time_series_ContinuousFrechet(std::string inputFile, std::string queryFile, std::string outputFile, double delta);
+void time_series_ContinuousFrechet(std::string inputFile, std::string queryFile, std::string outputFile, int k, int L, double delta);
 
 #endif
