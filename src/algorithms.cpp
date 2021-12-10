@@ -539,7 +539,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
         
         Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
         padding(&grid_curve, gridTables[i].curveDim);
-        vector<double> LSHvector = hashToLSHvector(grid_curve, gridTables[i].curveDim);
+        vector<double> LSHvector = keyLSHvector2D(grid_curve, gridTables[i].curveDim);
         // Update hinfo with the right vectors for every hash table, to compute query's g-value
         hInfo->update_v(gridTables[i].v);
         hInfo->update_t(gridTables[i].t);

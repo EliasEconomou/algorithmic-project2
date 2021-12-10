@@ -348,17 +348,14 @@ Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
     Curve grid_curve;
     for (int i = 0; i < curve.cpoints.size(); i++)
     {
-
         double ay = floor((curve.cpoints[i].vpoint[0] - tShiftGrid.first)/delta + 0.5)*delta + tShiftGrid.first;
         double ax = floor((curve.cpoints[i].vpoint[1] - tShiftGrid.second)/delta + 0.5)*delta + tShiftGrid.second;
-        // cout << "coming POINT " << i << " = " << curve.coordinates[i].first << " with TIME = " << curve.coordinates[i].second << " and GRID POINT = " << ay << " with TIME = " << ax << endl;
         Point p;
-        //int point_id = 0;
-        //p.itemID = to_string(point_id);
+        int point_id = 0;
+        p.itemID = to_string(point_id);
         p.vpoint.push_back(ay);
         p.vpoint.push_back(ax);
         grid_curve.cpoints.push_back(p);
-        //int gridCsize = grid_curve.cpoints.size();
     }
 
     Point prev;
@@ -379,31 +376,98 @@ Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
 
 void padding(Curve *curve, int dimension)
 {
-  int cSize = curve->cpoints.size(); //size before padding
-  if (cSize < dimension)
-  {
-    //cout << dimension << " pad " << cSize << endl;
-    for (int i = 0; i < dimension - cSize; i++)
+    int cSize = curve->cpoints.size(); //size before padding
+    if (cSize < dimension)
     {
+        cout << dimension << " pad " << cSize << endl;
+        for (int i = 0; i < dimension - cSize; i++)
+        {
+            Point p;
+            int point_id = 0;
+            p.itemID = to_string(point_id);
+            p.vpoint.push_back(M_PAD);
+            p.vpoint.push_back(M_PAD);
+            curve->cpoints.push_back(p);
+        }
+    }
+}
+
+vector<double> keyLSHvector2D(Curve curve, int dimension)
+{
+    vector<double> LSHvector;
+    for (int i = 0; i < dimension; i++)
+    {
+        double y = curve.cpoints[i].vpoint[0];
+        double x = curve.cpoints[i].vpoint[1];
+        LSHvector.push_back(y);
+        LSHvector.push_back(x);
+    }
+    return LSHvector;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void filtering(Curve *curve, double epsilon)
+{
+    
+    int curveDim = curve->cpoints.size();
+    for (int i = 0; i < curve->cpoints.size()-2; i++)
+    {
+        int cur = i;
+        if ((abs(curve->cpoints[cur].vpoint[0]-curve->cpoints[cur+1].vpoint[0])<=epsilon)
+        && (abs(curve->cpoints[cur+1].vpoint[0]-curve->cpoints[cur+2].vpoint[0])<=epsilon))
+        {
+            curve->cpoints.erase(curve->cpoints.begin()+cur+1);
+        }
+    }
+}
+
+
+Curve snapToGrid(Curve curve, double delta)
+{
+    //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
+    Curve grid_curve;
+    for (int i = 0; i < curve.cpoints.size(); i++)
+    {
+        double gridValue = floor(curve.cpoints[i].vpoint[0]/delta)*delta;
         Point p;
         int point_id = 0;
         p.itemID = to_string(point_id);
-        p.vpoint.push_back(M_PAD);
-        p.vpoint.push_back(M_PAD);
-        curve->cpoints.push_back(p);
+        p.vpoint.push_back(gridValue);
+        grid_curve.cpoints.push_back(p);
     }
-  }
+
+
+    return grid_curve;
 }
 
-vector<double> hashToLSHvector(Curve curve, int dimension)
+
+void minima_maxima(Curve *curve)
 {
-  vector<double> LSHvector;
-  for (int i = 0; i < dimension; i++)
-  {
-    double y = curve.cpoints[i].vpoint[0];
-    double x = curve.cpoints[i].vpoint[1];
-    LSHvector.push_back(y);
-    LSHvector.push_back(x);
-  }
-  return LSHvector;
+    int curveDim = curve->cpoints.size();
+    for (int i = 0; i < curve->cpoints.size()-2; i++)
+    {
+        int cur = i;
+        if (((curve->cpoints[cur].vpoint[0]<curve->cpoints[cur+1].vpoint[0])
+        && (curve->cpoints[cur+1].vpoint[0]<curve->cpoints[cur+2].vpoint[0]))
+        || ((curve->cpoints[cur].vpoint[0]>curve->cpoints[cur+1].vpoint[0])
+        && (curve->cpoints[cur+1].vpoint[0]>curve->cpoints[cur+2].vpoint[0])))
+        {
+            curve->cpoints.erase(curve->cpoints.begin()+cur+1);
+        }
+    }
+}
+
+
+std::vector<double> keyLSHvector1D(Curve curve, int dimension)
+{
+    vector<double> LSHvector;
+    for (int i = 0; i < curve.cpoints.size(); i++)
+    {
+        double value = curve.cpoints[i].vpoint[0];
+        LSHvector.push_back(value);
+    }
+    return LSHvector;
 }
