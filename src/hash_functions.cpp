@@ -344,36 +344,53 @@ int compute_gValue(vector<int> fValues, CUBE_hash_info *hInfo) //cube
 
 Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
 {
-  //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
-  Curve grid_curve;
-  for (int i = 0; i < curve.coordinates.size(); i++)
-  {
+    //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
+    Curve grid_curve;
+    for (int i = 0; i < curve.cpoints.size(); i++)
+    {
 
-    double ay = floor((curve.coordinates[i].first - tShiftGrid.first)/delta + 0.5)*delta + tShiftGrid.first;
-    double ax = floor((curve.coordinates[i].second - tShiftGrid.second)/delta + 0.5)*delta + tShiftGrid.second;
-    // cout << "coming POINT " << i << " = " << curve.coordinates[i].first << " with TIME = " << curve.coordinates[i].second << " and GRID POINT = " << ay << " with TIME = " << ax << endl;
-    pair<double,double> yxpoint = make_pair(ay,ax);
-    int gridCsize = grid_curve.coordinates.size();
+        double ay = floor((curve.cpoints[i].vpoint[0] - tShiftGrid.first)/delta + 0.5)*delta + tShiftGrid.first;
+        double ax = floor((curve.cpoints[i].vpoint[1] - tShiftGrid.second)/delta + 0.5)*delta + tShiftGrid.second;
+        // cout << "coming POINT " << i << " = " << curve.coordinates[i].first << " with TIME = " << curve.coordinates[i].second << " and GRID POINT = " << ay << " with TIME = " << ax << endl;
+        Point p;
+        //int point_id = 0;
+        //p.itemID = to_string(point_id);
+        p.vpoint.push_back(ay);
+        p.vpoint.push_back(ax);
+        grid_curve.cpoints.push_back(p);
+        //int gridCsize = grid_curve.cpoints.size();
+    }
 
-    grid_curve.coordinates.push_back(yxpoint);
-  }
-  // Remove consecutive duplicates.
-  vector<pair<double,double> >::iterator it;
-  it = unique(grid_curve.coordinates.begin(), grid_curve.coordinates.end());
-  grid_curve.coordinates.resize( it - grid_curve.coordinates.begin() );
+    Point prev;
+    for (auto it = grid_curve.cpoints.begin(); it != grid_curve.cpoints.end(); it++)
+    {
+        if (prev.vpoint == it->vpoint)
+        {
+            grid_curve.cpoints.erase(it);
+            it--;
+        }
+        else {
+            prev = *it;
+        }
+    }
+
   return grid_curve;
 }
 
 void padding(Curve *curve, int dimension)
 {
-  int cSize = curve->coordinates.size(); //size before padding
+  int cSize = curve->cpoints.size(); //size before padding
   if (cSize < dimension)
   {
     //cout << dimension << " pad " << cSize << endl;
     for (int i = 0; i < dimension - cSize; i++)
     {
-      pair<double,int> MM = make_pair(M_PAD,M_PAD);
-      curve->coordinates.push_back(MM);
+        Point p;
+        int point_id = 0;
+        p.itemID = to_string(point_id);
+        p.vpoint.push_back(M_PAD);
+        p.vpoint.push_back(M_PAD);
+        curve->cpoints.push_back(p);
     }
   }
 }
@@ -383,8 +400,8 @@ vector<double> hashToLSHvector(Curve curve, int dimension)
   vector<double> LSHvector;
   for (int i = 0; i < dimension; i++)
   {
-    double y = curve.coordinates[i].first;
-    double x = curve.coordinates[i].second;
+    double y = curve.cpoints[i].vpoint[0];
+    double x = curve.cpoints[i].vpoint[1];
     LSHvector.push_back(y);
     LSHvector.push_back(x);
   }

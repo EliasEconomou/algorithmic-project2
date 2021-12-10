@@ -7,7 +7,7 @@
 #include <utility>
 #include <algorithm>
 #include <cmath>
-#include "curve_functions.hpp"
+#include "point_functions.hpp"
 #include "hash_functions.hpp"
 
 class GridNode

@@ -183,28 +183,22 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
         cin >> inputFile;
     }
 
+    std::cout << "Parsing data file..." << endl;
     Vector_of_curves inputData;
     inputData = curve_parsing(inputFile);
 
-    // int dimension = inputData.curves[0].coordinates.size();
+    int dimension = inputData.curves[0].cpoints.size();
     // for (int i = 0; i < 3; i++)
     // {
     //     for (int j = 0; j < dimension; j++)
     //     {
-    //         cout << "(" << inputData.curves[i].coordinates[j].first << " - " << inputData.curves[i].coordinates[j].second << ")" << "  ";
+    //         cout << "(" << inputData.curves[i].cpoints[j].vpoint[0] << " - " << inputData.curves[i].cpoints[j].vpoint[1] << ")" << "  ";
     //     }
     //     cout << endl << endl;
     // }
 
     int curvesNumber = inputData.curves.size();
-    int dimension = inputData.curves[0].coordinates.size();
     int bucketsNumber = curvesNumber/8;
-    
-    // double arrayOfShifts[L]; //TODO delete
-    // for (int i = 0; i < L; i++)
-    // {
-    //     arrayOfShifts[i] = random_double(0,delta);
-    // }
     
     LSH_hash_info hInfo(k, dimension, L);
 
@@ -215,6 +209,7 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
         gridTables.push_back(gt);
     }
     
+    std::cout << "Storing data in hash tables..." << endl;
     for (int i = 0; i < L; i++)
     {
         gridTables[i].v = compute_v(k,2*dimension);

@@ -557,13 +557,13 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
         list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
         typename list<GridNode>::iterator current;
         for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
-            // if (ID != current->ID)
-            // {
-            //     continue;
-            // }
+            if (ID != current->ID)
+            {
+                continue;
+            }
 
             double dist = discrete_frechet_distance(q,*(current->curve));
-            cout << dist << endl;
+            //cout << dist << endl;
             if (dist < best.second)
             {
                 best.second = dist;

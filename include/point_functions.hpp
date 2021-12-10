@@ -8,7 +8,10 @@
 #include <fstream>
 #include <vector>
 #include <random>
+#include <string>
 
+
+////////////////////////////////////////////////////////    POINT   ////////////////////////////////////////////////////////
 
 class Point
 {
@@ -18,7 +21,6 @@ public:
     
 };
 
-
 class Vector_of_points
 {
 public:
@@ -26,15 +28,36 @@ public:
 };
 
 
-class Cluster_of_points // class to implement clusters easier
+
+////////////////////////////////////////////////////////    CURVE   ////////////////////////////////////////////////////////
+
+class Curve
 {
-    public:
-    std::vector<Point> centroids; //vector of centroid Points
-    std::vector<Vector_of_points> points; //vector of Points in each cluster
+public:
+    std::string curveID; //index id of curve
+    std::vector<Point> cpoints; //vector contains pairs of value/time - points in time series
 };
 
-//---Helping class, dont bother looking---
-class kplusplus_helper{
+class Vector_of_curves
+{
+public:
+    std::vector<Curve> curves; //vector of curves
+};
+
+
+
+////////////////////////////////////////////////////////    CLUSTERING   ////////////////////////////////////////////////////////
+
+class Cluster_of_points //class to implement clusters easier
+{
+    public:
+    std::vector<Point> centroids; //vector of centroid points
+    std::vector<Vector_of_points> points; //vector of points in each cluster
+};
+
+
+class kplusplus_helper //helping class
+{
     public:
     std::vector<double> Additive_Square_Sums;
     std::vector<std::vector<double>> Dist_From_Centroids;
@@ -44,6 +67,14 @@ class kplusplus_helper{
 };
 
 
+
+////////////////////////////////////////////////////////    FUNCTIONS   ////////////////////////////////////////////////////////
+
+// Parse dataset and return a vector of dataset's vectors.
+Vector_of_curves curve_parsing(std::string);
+
+// Compute discrete frechet distance between curves.
+double discrete_frechet_distance (Curve c1, Curve c2);
 
 // Parse dataset and return a vector of dataset's vectors.
 Vector_of_points parsing(std::string);
@@ -60,6 +91,7 @@ double inner_prod(std::vector<double> v1, std::vector<int> v2);
 // Returns a random integer in the specified range.
 int random_number(int begin, int end);
 
+// Returns a random DOUBLE in the specified range.
 double random_double(double n1, double n2);
 
 // Returns modulo of two numbers.

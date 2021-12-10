@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <functional>
 #include "point_functions.hpp"
-#include "curve_functions.hpp"
 
 
 class LSH_hash_info

@@ -14,7 +14,6 @@
 #include "cube_table.hpp"
 #include "hash_functions.hpp"
 #include "grid_table.hpp"
-#include "curve_functions.hpp"
 
 
 // Compare function to use in set.
