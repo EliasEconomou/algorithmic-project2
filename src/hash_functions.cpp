@@ -377,6 +377,7 @@ Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
 void padding(Curve *curve, int dimension)
 {
     int cSize = curve->cpoints.size(); //size before padding
+    int pSize = curve->cpoints[0].vpoint.size(); //point dimension
     if (cSize < dimension)
     {
         cout << dimension << " pad " << cSize << endl;
@@ -385,11 +386,14 @@ void padding(Curve *curve, int dimension)
             Point p;
             int point_id = 0;
             p.itemID = to_string(point_id);
-            p.vpoint.push_back(M_PAD);
-            p.vpoint.push_back(M_PAD);
+            for (int j = 0; j < pSize; j++)
+            {
+                p.vpoint.push_back(M_PAD);
+            }
             curve->cpoints.push_back(p);
         }
     }
+    cout << "final dimension = " << curve->cpoints[119].vpoint.size() << endl;
 }
 
 vector<double> keyLSHvector2D(Curve curve, int dimension)
