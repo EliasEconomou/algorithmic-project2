@@ -105,24 +105,24 @@ std::vector<int> compute_r(int k);
 
 
 // Snaps a curve to a grid of two dimensions removing consecutive duplicates.
-Curve snapToGrid(Curve curve, std::pair<double,double> tShiftGrid, double delta);
+ClassCurve snapToGrid(ClassCurve curve, std::pair<double,double> tShiftGrid, double delta);
 
 // Pads the snapped curve with a big number so that all curves are equally sized.
-void padding(Curve *curve, int dimension);
+void padding(ClassCurve *curve, int dimension);
 
 // Produce the hash key from the snapped curve (2D).
-std::vector<double> keyLSHvector2D(Curve curve);
+std::vector<double> keyLSHvector2D(ClassCurve curve);
 
 // Filter time series to keep the important points.
-void filtering(Curve *curve, double epsilon);
+void filtering(ClassCurve *curve, double epsilon);
 
 // Snaps a curve to a grid of one dimension removing consecutive duplicates.
-Curve snapToGrid(Curve curve, double delta);
+ClassCurve snapToGrid(ClassCurve curve, double delta);
 
 // Keep sequence of minima and maxima by removing from v1,...,vm any vi s.t. vi ∈ [min{vi−1, vi+1}, max{vi−1, vi+1}]
-void minima_maxima(Curve *curve);
+void minima_maxima(ClassCurve *curve);
 
 // Produce the hash key from the snapped curve (1D).
-std::vector<double> keyLSHvector1D(Curve curve);
+std::vector<double> keyLSHvector1D(ClassCurve curve);
 
 #endif

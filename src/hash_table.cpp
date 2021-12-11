@@ -3,7 +3,7 @@
 using namespace std;
 
 
-HashNode::HashNode(Point *p, long int ID)
+HashNode::HashNode(ClassPoint *p, long int ID)
 {
   this->ID = ID;
   this->point = p;
@@ -17,7 +17,7 @@ HashTable::HashTable(int bucketsNumber)
 }
 
 
-void HashTable::HTinsert(Point *p, LSH_hash_info *hInfo)
+void HashTable::HTinsert(ClassPoint *p, LSH_hash_info *hInfo)
 {
   vector<int> hValues;
   hInfo->update_v(this->v);

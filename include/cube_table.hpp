@@ -11,8 +11,8 @@
 class Vertice
 {
 public:
-    Point *point;
-    Vertice(Point *p);
+    ClassPoint *point;
+    Vertice(ClassPoint *p);
 };
 
 class CubeTable
@@ -27,7 +27,7 @@ public:
     CubeTable(int bucketsNumber);
     
     // Insert item in cube table
-    void CTinsert(Point *p, CUBE_hash_info *hInfo);
+    void CTinsert(ClassPoint *p, CUBE_hash_info *hInfo);
 
     int get_bucketsNumber();
 

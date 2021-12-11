@@ -26,7 +26,7 @@ Vector_of_points parsing(string fileName){
         //getting data from each line and creating vectors to store them
         istringstream line_stringstream(line);
         string word;
-        Point p;
+        ClassPoint p;
 
         line_stringstream >> word; // Read first word - index_ID
    
@@ -191,7 +191,7 @@ Vector_of_curves curve_parsing(string fileName, int dim){
             //getting data from each line and creating vectors to store them
             istringstream line_stringstream(line);
             string word;
-            Curve c;
+            ClassCurve c;
 
             line_stringstream >> word; // Read first word - index_ID
     
@@ -199,7 +199,7 @@ Vector_of_curves curve_parsing(string fileName, int dim){
             while(line_stringstream >> word) {
                 
                 //c.coordinates.push_back(make_pair(stod(word),t));
-                Point p;
+                ClassPoint p;
                 p.itemID = to_string(point_id);
                 p.vpoint.push_back(stod(word));
                 p.vpoint.push_back(t);
@@ -232,7 +232,7 @@ Vector_of_curves curve_parsing(string fileName, int dim){
             //getting data from each line and creating vectors to store them
             istringstream line_stringstream(line);
             string word;
-            Curve c;
+            ClassCurve c;
 
             line_stringstream >> word; // Read first word - index_ID
     
@@ -240,7 +240,7 @@ Vector_of_curves curve_parsing(string fileName, int dim){
             while(line_stringstream >> word) {
                 
                 //c.coordinates.push_back(make_pair(stod(word),t));
-                Point p;
+                ClassPoint p;
                 p.itemID = to_string(point_id);
                 p.vpoint.push_back(stod(word));
                 c.cpoints.push_back(p);
@@ -269,7 +269,7 @@ Vector_of_curves curve_parsing(string fileName, int dim){
 }
 
 
-double discrete_frechet_distance (Curve c1, Curve c2)
+double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 {
     int c1size = c1.cpoints.size();
     int c2size = c2.cpoints.size();

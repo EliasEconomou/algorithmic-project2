@@ -3,7 +3,7 @@
 using namespace std;
 
 
-GridNode::GridNode(Curve *c, long int ID)
+GridNode::GridNode(ClassCurve *c, long int ID)
 {
   this->ID = ID;
   this->curve = c;
@@ -32,7 +32,7 @@ GridTable::GridTable(int bucketsNumber, double delta, int curveDim, int pointDim
 }
 
 
-void GridTable::GridInsert(Curve *c, LSH_hash_info *hInfo)
+void GridTable::GridInsert(ClassCurve *c, LSH_hash_info *hInfo)
 {
   // We will create a vector by snapping incoming curve to a 1D or 2D grid. This 'LSHvector' will be the hash key for LSH
   // to find the right bucket.
@@ -40,9 +40,9 @@ void GridTable::GridInsert(Curve *c, LSH_hash_info *hInfo)
 
   if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
   {
-    //Curve filteredCurve = *c; //todo delete
+    //ClassCurve filteredCurve = *c; //todo delete
     filtering(c, this->epsilon);
-    Curve gridCurve = snapToGrid(*c,this->delta);
+    ClassCurve gridCurve = snapToGrid(*c,this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector1D(gridCurve);
@@ -54,7 +54,7 @@ void GridTable::GridInsert(Curve *c, LSH_hash_info *hInfo)
   }
   else if (this->pointDim == 2)
   {
-    Curve gridCurve = snapToGrid(*c, this->tShiftGrid, this->delta);
+    ClassCurve gridCurve = snapToGrid(*c, this->tShiftGrid, this->delta);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector2D(gridCurve);
     // for (int i = 0; i < 2*this->curveDim; i++)

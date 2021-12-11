@@ -72,8 +72,8 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
     {
         out << "Query: " << queryData.points[i].itemID << endl;
         double lshTime, trueTime;
-        set<pair<Point,double>, CompDist> lshBestPointsDists;
-        set<pair<Point,double>, CompDist> trueBestPointsDists;
+        set<pair<ClassPoint,double>, CompDist> lshBestPointsDists;
+        set<pair<ClassPoint,double>, CompDist> trueBestPointsDists;
         lshBestPointsDists = lsh_approximate_nNN(queryData.points[i], 1, hashTables, &hInfo, lshTime);
         trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
         int neighbor = 1;
@@ -146,8 +146,8 @@ void time_series_Hypercube(string inputFile, string queryFile, string outputFile
     // {
     //     out << "Query: " << queryData.points[i].itemID << endl;
     //     double cubeTime, trueTime;
-    //     set<pair<Point,double>, CompDist> cubeBestPointsDists;
-    //     set<pair<Point,double>, CompDist> trueBestPointsDists;
+    //     set<pair<ClassPoint,double>, CompDist> cubeBestPointsDists;
+    //     set<pair<ClassPoint,double>, CompDist> trueBestPointsDists;
     //     cubeBestPointsDists = cube_approximate_nNN(queryData.points[i], N, cubeTable, &hInfo, cubeTime);
     //     trueBestPointsDists = true_nNN(queryData.points[i], N, inputData, trueTime);
     //     int neighbor = 1;
@@ -244,8 +244,8 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     {
         out << "Query: " << queryData.curves[i].curveID << endl;
         double lshTime, trueTime;
-        pair<Curve,double> lshBestPointDist;
-        // pair<Point,double> trueBestPointsDists;
+        pair<ClassCurve,double> lshBestPointDist;
+        // pair<ClassPoint,double> trueBestPointsDists;
         lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
         out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
         // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
@@ -329,8 +329,8 @@ void time_series_ContinuousFrechet(string inputFile, string queryFile, string ou
     {
         out << "Query: " << queryData.curves[i].curveID << endl;
         double lshTime, trueTime;
-        pair<Curve,double> lshBestPointDist;
-        // pair<Point,double> trueBestPointsDists;
+        pair<ClassCurve,double> lshBestPointDist;
+        // pair<ClassPoint,double> trueBestPointsDists;
         lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
         out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
         // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);

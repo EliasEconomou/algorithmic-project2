@@ -342,15 +342,15 @@ int compute_gValue(vector<int> fValues, CUBE_hash_info *hInfo) //cube
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
+ClassCurve snapToGrid(ClassCurve curve, pair<double,double> tShiftGrid, double delta)
 {
     //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
-    Curve grid_curve;
+    ClassCurve grid_curve;
     for (int i = 0; i < curve.cpoints.size(); i++)
     {
         double ay = floor((curve.cpoints[i].vpoint[0] - tShiftGrid.first)/delta + 0.5)*delta + tShiftGrid.first;
         double ax = floor((curve.cpoints[i].vpoint[1] - tShiftGrid.second)/delta + 0.5)*delta + tShiftGrid.second;
-        Point p;
+        ClassPoint p;
         int point_id = 0;
         p.itemID = to_string(point_id);
         p.vpoint.push_back(ay);
@@ -358,7 +358,7 @@ Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
         grid_curve.cpoints.push_back(p);
     }
 
-    Point prev;
+    ClassPoint prev;
     for (auto it = grid_curve.cpoints.begin(); it != grid_curve.cpoints.end(); it++)
     {
         if (prev.vpoint == it->vpoint)
@@ -374,7 +374,7 @@ Curve snapToGrid(Curve curve, pair<double,double> tShiftGrid, double delta)
   return grid_curve;
 }
 
-void padding(Curve *curve, int curveDim)
+void padding(ClassCurve *curve, int curveDim)
 {
     int curveDim_prepad = curve->cpoints.size(); //size before padding
     int pointDim = curve->cpoints[0].vpoint.size(); //point dimension
@@ -383,7 +383,7 @@ void padding(Curve *curve, int curveDim)
         //cout << dimension << " pad " << cSize << endl;
         for (int i = 0; i < curveDim - curveDim_prepad; i++)
         {
-            Point p;
+            ClassPoint p;
             int point_id = 0;
             p.itemID = to_string(point_id);
             for (int j = 0; j < pointDim; j++)
@@ -396,7 +396,7 @@ void padding(Curve *curve, int curveDim)
     //cout << "final dimension = " << curve->cpoints[119].vpoint.size() << endl;
 }
 
-vector<double> keyLSHvector2D(Curve curve)
+vector<double> keyLSHvector2D(ClassCurve curve)
 {
     int curveDim = curve.cpoints.size();
     vector<double> LSHvector;
@@ -414,7 +414,7 @@ vector<double> keyLSHvector2D(Curve curve)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void filtering(Curve *curve, double epsilon)
+void filtering(ClassCurve *curve, double epsilon)
 {
     
     int curveDim = curve->cpoints.size();
@@ -429,14 +429,14 @@ void filtering(Curve *curve, double epsilon)
     }
 }
 
-Curve snapToGrid(Curve curve, double delta)
+ClassCurve snapToGrid(ClassCurve curve, double delta)
 {
     //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
-    Curve grid_curve;
+    ClassCurve grid_curve;
     for (int i = 0; i < curve.cpoints.size(); i++)
     {
         double gridValue = floor(curve.cpoints[i].vpoint[0]/delta)*delta;
-        Point p;
+        ClassPoint p;
         int point_id = 0;
         p.itemID = to_string(point_id);
         p.vpoint.push_back(gridValue);
@@ -445,7 +445,7 @@ Curve snapToGrid(Curve curve, double delta)
     return grid_curve;
 }
 
-void minima_maxima(Curve *curve)
+void minima_maxima(ClassCurve *curve)
 {
     for (int i = 0; i < curve->cpoints.size()-2; i++)
     {
@@ -460,7 +460,7 @@ void minima_maxima(Curve *curve)
     }
 }
 
-std::vector<double> keyLSHvector1D(Curve curve)
+std::vector<double> keyLSHvector1D(ClassCurve curve)
 {
     vector<double> LSHvector;
     for (int i = 0; i < curve.cpoints.size(); i++)

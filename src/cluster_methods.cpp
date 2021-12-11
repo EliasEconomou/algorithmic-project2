@@ -64,8 +64,8 @@ double silhuette(Cluster_of_points cluster, int i){
 //---------------------------------------------------------------------------//
 
 void calculate_centroids(Cluster_of_points &cluster){
-    Point new_centroid;
-    vector<Point> new_centroids;
+    ClassPoint new_centroid;
+    vector<ClassPoint> new_centroids;
     vector<double> sum_of_dimention;
     int centroid_count = cluster.centroids.size();
     
@@ -117,7 +117,7 @@ Cluster_of_points initialize_kplusplus(Vector_of_points &Data, Cluster_of_points
     kplusplus_helper Kplusplus;
 
     // ---Getting a random point to be a centroid and adding it to centroid vector---
-    Point Rand_centroid = Data.points[ random_number(1,Data.points.size()) ]; //Get random point to be the first centroid
+    ClassPoint Rand_centroid = Data.points[ random_number(1,Data.points.size()) ]; //Get random point to be the first centroid
     Kplusplus.Centroids.push_back(Rand_centroid);
 
     int t=1;
@@ -129,7 +129,7 @@ Cluster_of_points initialize_kplusplus(Vector_of_points &Data, Cluster_of_points
         bool wascentroid;
         vector<double> distances;
         for (int i=0 ; i < Data.points.size() ; i++){
-            Point* CurrentPoint = &(Data.points[i]);
+            ClassPoint* CurrentPoint = &(Data.points[i]);
             wascentroid=false;
             for (int j=0 ; j < Kplusplus.Centroids.size() ; j++){
                 if (Kplusplus.Centroids[j].itemID == CurrentPoint->itemID){ //if current is centroid dont

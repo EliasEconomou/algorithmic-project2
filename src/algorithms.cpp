@@ -7,10 +7,10 @@ using namespace std;
 // TRUE //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-pair<Point,double> true_NN(Point q, Vector_of_points inputData)
+pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData)
 {
-    Point b;
-    pair<Point,double> best;
+    ClassPoint b;
+    pair<ClassPoint,double> best;
     best.first = b; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
     
@@ -29,13 +29,13 @@ pair<Point,double> true_NN(Point q, Vector_of_points inputData)
 }
 
 
-set<pair<Point,double>, CompDist> true_nNN(Point q, int N, Vector_of_points inputData, double &time)
+set<pair<ClassPoint,double>, CompDist> true_nNN(ClassPoint q, int N, Vector_of_points inputData, double &time)
 {
     using namespace std::chrono;
     high_resolution_clock::time_point start = high_resolution_clock::now();
     // Initialise a set two hold pairs of true best point/best distance.
-    set<pair<Point,double>, CompDist> bestPointsDists;
-    Point a;
+    set<pair<ClassPoint,double>, CompDist> bestPointsDists;
+    ClassPoint a;
     bestPointsDists.insert(make_pair(a,DBL_MAX));
     
     for (int i = 0; i < inputData.points.size(); i++)
@@ -67,10 +67,10 @@ set<pair<Point,double>, CompDist> true_nNN(Point q, int N, Vector_of_points inpu
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-pair<Point,double> lsh_approximate_NN(Point q, vector<HashTable> hashTables, LSH_hash_info *hInfo)
+pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, vector<HashTable> hashTables, LSH_hash_info *hInfo)
 {
-    Point b;
-    pair<Point,double> best;
+    ClassPoint b;
+    pair<ClassPoint,double> best;
     best.first = b; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
 
@@ -112,13 +112,13 @@ pair<Point,double> lsh_approximate_NN(Point q, vector<HashTable> hashTables, LSH
 }
 
 
-set<pair<Point,double>, CompDist> lsh_approximate_nNN(Point q, int N, vector<HashTable> hashTables, LSH_hash_info *hInfo, double &time)
+set<pair<ClassPoint,double>, CompDist> lsh_approximate_nNN(ClassPoint q, int N, vector<HashTable> hashTables, LSH_hash_info *hInfo, double &time)
 {
     using namespace std::chrono;
     high_resolution_clock::time_point start = high_resolution_clock::now();
     // Initialise a set two hold pairs of best point/best distance.
-    set<pair<Point,double>, CompDist> bestPointsDists;
-    Point a;
+    set<pair<ClassPoint,double>, CompDist> bestPointsDists;
+    ClassPoint a;
     bestPointsDists.insert(make_pair(a,DBL_MAX));
     int L = hInfo->get_L();
     for (int i = 0; i < L; i++) {
@@ -168,7 +168,7 @@ set<pair<Point,double>, CompDist> lsh_approximate_nNN(Point q, int N, vector<Has
 }
 
 
-unordered_map<string,double> lsh_approximate_range_search(Point q, double R, vector<HashTable> hashTables, LSH_hash_info *hInfo)
+unordered_map<string,double> lsh_approximate_range_search(ClassPoint q, double R, vector<HashTable> hashTables, LSH_hash_info *hInfo)
 {
     // Initialise an unordered map two hold points-distances inside radius r.
     unordered_map<string,double> rPoints;
@@ -227,10 +227,10 @@ int hammingDistance(int n1, int n2)
 }
 
 
-pair<Point,double> cube_approximate_NN(Point q, CubeTable cubeTable, CUBE_hash_info *hInfo)
+pair<ClassPoint,double> cube_approximate_NN(ClassPoint q, CubeTable cubeTable, CUBE_hash_info *hInfo)
 {
-    Point b;
-    pair<Point,double> best;
+    ClassPoint b;
+    pair<ClassPoint,double> best;
     best.first = b; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
     
@@ -320,13 +320,13 @@ pair<Point,double> cube_approximate_NN(Point q, CubeTable cubeTable, CUBE_hash_i
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-set<pair<Point,double>, CompDist> cube_approximate_nNN(Point q, int N, CubeTable cubeTable, CUBE_hash_info *hInfo, double &time)
+set<pair<ClassPoint,double>, CompDist> cube_approximate_nNN(ClassPoint q, int N, CubeTable cubeTable, CUBE_hash_info *hInfo, double &time)
 {
     using namespace std::chrono;
     high_resolution_clock::time_point start = high_resolution_clock::now();
     // Initialise a set two hold pairs of best point/best distance.
-    set<pair<Point,double>, CompDist> bestPointsDists;
-    Point a;
+    set<pair<ClassPoint,double>, CompDist> bestPointsDists;
+    ClassPoint a;
     bestPointsDists.insert(make_pair(a,DBL_MAX));
     
     // Update hinfo with the right vectors for hash table, to compute query's g-value
@@ -432,7 +432,7 @@ set<pair<Point,double>, CompDist> cube_approximate_nNN(Point q, int N, CubeTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-std::unordered_map<string,double> cube_approximate_range_search(Point q, double R, CubeTable cubeTable, CUBE_hash_info *hInfo)
+std::unordered_map<string,double> cube_approximate_range_search(ClassPoint q, double R, CubeTable cubeTable, CUBE_hash_info *hInfo)
 {
     // Initialise an unordered map two hold points-distances inside radius r.
     unordered_map<string,double> rPoints;
@@ -527,10 +527,10 @@ std::unordered_map<string,double> cube_approximate_range_search(Point q, double 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH_hash_info *hInfo)
+pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridTables, LSH_hash_info *hInfo)
 {
-    Curve c;
-    pair<Curve,double> best;
+    ClassCurve c;
+    pair<ClassCurve,double> best;
     best.first = c; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
 
@@ -541,7 +541,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
         for (int i = 0; i < L; i++) 
         {
             filtering(&q, gridTables[i].epsilon);
-            Curve gridCurve = snapToGrid(q,gridTables[i].delta);
+            ClassCurve gridCurve = snapToGrid(q,gridTables[i].delta);
             minima_maxima(&gridCurve);
             padding(&gridCurve, gridTables[i].curveDim);
             vector<double> LSHvector = keyLSHvector1D(gridCurve);
@@ -566,7 +566,22 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
                 {
                     continue;
                 }
+                //CONVERT Q AND CURRENT->CURVE TO FRED CURVE TYPE
+                Curve FredCurve(q.cpoints.size(),"0");
+                Points FredPoints(q.cpoints.size());
+                for (int i = 0; i < q.cpoints.size(); i++)
+                {
+                    Point FredPoint(1);
+                    FredPoint.assign(1,q.cpoints[i].vpoint[0]);
+                    std::cout << FredPoint << endl;
+                    FredPoints[i].assign(FredPoint);
+                    std::cout << FredPoints.size() << endl;
 
+                    // FredCurve.push_back(q.cpoints[i])
+                }
+                
+
+                
                 double dist = discrete_frechet_distance(q,*(current->curve));
                 // cout << dist << endl;
                 if (dist < best.second)
@@ -581,7 +596,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
     {
         for (int i = 0; i < L; i++) 
         {
-            Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+            ClassCurve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
             padding(&grid_curve, gridTables[i].curveDim);
             vector<double> LSHvector = keyLSHvector2D(grid_curve);
             // Update hinfo with the right vectors for every hash table, to compute query's g-value
@@ -618,7 +633,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
     }
     else
     {
-        cout << "Unexpected error occured: Point dimension must be 1 for continuous / 2 for discrete frechet distance." << endl;
+        cout << "Unexpected error occured: ClassPoint dimension must be 1 for continuous / 2 for discrete frechet distance." << endl;
         exit (EXIT_FAILURE);
     }
     

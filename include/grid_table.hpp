@@ -17,8 +17,8 @@ class GridNode
 {
 public:
     long int ID;
-    Curve *curve;
-    GridNode(Curve *p, long int ID);
+    ClassCurve *curve;
+    GridNode(ClassCurve *p, long int ID);
 };
 
 class GridTable
@@ -39,7 +39,7 @@ public:
     GridTable(int bucketsNumber, double delta, int curveDim, int pointDim);
     
     // Insert curve in grid
-    void GridInsert(Curve *p, LSH_hash_info *hInfo);
+    void GridInsert(ClassCurve *p, LSH_hash_info *hInfo);
 
     // Display grid (debug)
     void GridDisplay();

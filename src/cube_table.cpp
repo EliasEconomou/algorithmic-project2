@@ -3,7 +3,7 @@
 using namespace std;
 
 
-Vertice::Vertice(Point *p)
+Vertice::Vertice(ClassPoint *p)
 {
   this->point = p;
 }
@@ -16,7 +16,7 @@ CubeTable::CubeTable(int bucketsNumber)
 }
 
 
-void CubeTable::CTinsert(Point *p, CUBE_hash_info *hInfo)
+void CubeTable::CTinsert(ClassPoint *p, CUBE_hash_info *hInfo)
 {
   vector<int> hValues;
   hInfo->update_v(this->v);

@@ -7,14 +7,14 @@
 #include "hash_functions.hpp"
 #include "point_functions.hpp"
 
-class Point;
+class ClassPoint;
 
 class HashNode
 {
 public:
     long int ID;
-    Point *point;
-    HashNode(Point *p, long int ID);
+    ClassPoint *point;
+    HashNode(ClassPoint *p, long int ID);
 };
 
 class HashTable
@@ -30,7 +30,7 @@ public:
     HashTable(int bucketsNumber);
     
     // Insert item in hash table
-    void HTinsert(Point *p, LSH_hash_info *hInfo);
+    void HTinsert(ClassPoint *p, LSH_hash_info *hInfo);
 
     // Display hash table (debug)
     void HTdisplay();
