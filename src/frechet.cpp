@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <limits>
 #include <ctime>
 
-#include "frechet.hpp"
+#include "../include/frechet.hpp"
 
 namespace Frechet {
 

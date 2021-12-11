@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #pragma once
 
+#include <algorithm>
 #include "config.hpp"
 #include "types.hpp"
 #include "point.hpp"
