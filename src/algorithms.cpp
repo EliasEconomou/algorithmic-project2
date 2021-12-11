@@ -567,18 +567,35 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
                     continue;
                 }
                 //CONVERT Q AND CURRENT->CURVE TO FRED CURVE TYPE
-                Curve FredCurve(q.cpoints.size(),"0");
                 Points FredPoints(q.cpoints.size());
+               
                 for (int i = 0; i < q.cpoints.size(); i++)
                 {
                     Point FredPoint(1);
                     FredPoint.assign(1,q.cpoints[i].vpoint[0]);
                     std::cout << FredPoint << endl;
-                    FredPoints[i].assign(FredPoint);
-                    std::cout << FredPoints.size() << endl;
-
-                    // FredCurve.push_back(q.cpoints[i])
+                    FredPoints.push_back(FredPoint);
                 }
+
+                cout << "PRINTING FredPoints" << endl;
+                cout << "FredPoints size: " << FredPoints.size() << endl;
+                for (int i = 0; i < FredPoints.size(); i++)
+                {
+                    cout << FredPoints[i];
+                }
+                cout << endl;
+
+                Curve FredCurve(FredPoints,"0");
+
+                cout << "PRINTING FredCurve" << endl;
+                cout << "FredCurve size: " << FredCurve.size() << endl;
+                for (int i = 0; i < FredCurve.size(); i++)
+                {
+                    cout << FredCurve.get(i);
+                }
+                cout << endl;
+
+                
                 
 
                 
