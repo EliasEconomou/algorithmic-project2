@@ -27,7 +27,7 @@ class GridTable
     std::vector<std::list<GridNode>> lists; //a list for every bucket
     
 public:
-    int gridDim; //dimension of grid
+    int pointDim; //dimension of grid / points of curves
     int curveDim; //dimension of curves (number of points)
     std::pair<double,double> tShiftGrid; //shift grid's y/x by this number (2D grid)
     double epsilon; //for filtering (1D grid)
@@ -36,7 +36,7 @@ public:
     std::vector<std::vector<double> > v; //k vectors to use to compute every h
     std::vector<int> r;
 
-    GridTable(int bucketsNumber, double delta, int curveDim, int gridDim);
+    GridTable(int bucketsNumber, double delta, int curveDim, int pointDim);
     
     // Insert curve in grid
     void GridInsert(Curve *p, LSH_hash_info *hInfo);

@@ -35,7 +35,7 @@ class Curve
 {
 public:
     std::string curveID; //index id of curve
-    std::vector<Point> cpoints; //vector contains pairs of value/time - points in time series
+    std::vector<Point> cpoints; //time series contains points
 };
 
 class Vector_of_curves

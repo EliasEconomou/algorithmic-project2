@@ -10,23 +10,21 @@ GridNode::GridNode(Curve *c, long int ID)
 }
 
 
-GridTable::GridTable(int bucketsNumber, double delta, int curveDim, int gridDim)
+GridTable::GridTable(int bucketsNumber, double delta, int curveDim, int pointDim)
 {
-  if (gridDim == 1)
+  if (pointDim == 1)
   {
-    this->gridDim = gridDim;
     this->epsilon = EPSILON;
     this->tShiftGrid.first = -1.0;
     this->tShiftGrid.second = -1.0;
   }
-  else if (gridDim == 2)
+  else if (pointDim == 2)
   {
-    this->gridDim = gridDim;
     this->tShiftGrid.first = random_double(0,delta);
     this->tShiftGrid.second = random_double(0,delta);
     this->epsilon = -1.0;
   }
-
+  this->pointDim = pointDim;
   this->bucketsNumber = bucketsNumber;
   this->delta = delta;
   this->curveDim = curveDim;
@@ -40,25 +38,25 @@ void GridTable::GridInsert(Curve *c, LSH_hash_info *hInfo)
   // to find the right bucket.
   vector<double> LSHvector;
 
-  if (this->gridDim == 1) //todo delete this->curveDim opou de xreiazetai
+  if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
   {
     Curve filteredCurve = *c;
     filtering(&filteredCurve, this->epsilon);
     Curve gridCurve = snapToGrid(filteredCurve,this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
-    LSHvector = keyLSHvector1D(gridCurve, this->curveDim);
-    for (int i = 0; i < this->curveDim; i++)
-    {
-      cout << LSHvector[i] << " - "; 
-    }
-    cout << endl << LSHvector.size() << endl;
+    LSHvector = keyLSHvector1D(gridCurve);
+    // for (int i = 0; i < this->curveDim; i++)
+    // {
+    //   cout << LSHvector[i] << " - "; 
+    // }
+    // cout << endl << LSHvector.size() << endl;
   }
-  else if (this->gridDim == 2)
+  else if (this->pointDim == 2)
   {
     Curve gridCurve = snapToGrid(*c, this->tShiftGrid, this->delta);
     padding(&gridCurve, this->curveDim);
-    LSHvector = keyLSHvector2D(gridCurve, this->curveDim);
+    LSHvector = keyLSHvector2D(gridCurve);
     // for (int i = 0; i < 2*this->curveDim; i++)
     // {
     //   cout << LSHvector[i] << " - "; 

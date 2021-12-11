@@ -535,42 +535,55 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
     best.second = DBL_MAX; //best distance of best candidate
 
     int L = hInfo->get_L();
-    for (int i = 0; i < L; i++) {
-        
-        Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
-        padding(&grid_curve, gridTables[i].curveDim);
-        vector<double> LSHvector = keyLSHvector2D(grid_curve, gridTables[i].curveDim);
-        // Update hinfo with the right vectors for every hash table, to compute query's g-value
-        hInfo->update_v(gridTables[i].v);
-        hInfo->update_t(gridTables[i].t);
-        hInfo->update_r(gridTables[i].r);
-        // Find g value for query point.
-        vector<int> hValues;
-        int k = hInfo->get_k();
-        for (int j = 0; j < k; j++)
-        {
-            hValues.push_back(compute_hValue(j, LSHvector, hInfo));
-            
-        }
-        long int ID = compute_IDvalue(hValues, hInfo);
-        int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
-        list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
-        typename list<GridNode>::iterator current;
-        for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
-            if (ID != current->ID)
-            {
-                continue;
-            }
 
-            double dist = discrete_frechet_distance(q,*(current->curve));
-            // cout << dist << endl;
-            if (dist < best.second)
+    if (gridTables[0].pointDim == 1) // CONTINUOUS FRECHET
+    {
+        /* code */
+    }
+    else if (gridTables[0].pointDim == 2) // DISCRETE FRECHET
+    {
+        for (int i = 0; i < L; i++) 
+        {
+            Curve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+            padding(&grid_curve, gridTables[i].curveDim);
+            vector<double> LSHvector = keyLSHvector2D(grid_curve);
+            // Update hinfo with the right vectors for every hash table, to compute query's g-value
+            hInfo->update_v(gridTables[i].v);
+            hInfo->update_t(gridTables[i].t);
+            hInfo->update_r(gridTables[i].r);
+            // Find g value for query point.
+            vector<int> hValues;
+            int k = hInfo->get_k();
+            for (int j = 0; j < k; j++)
             {
-                best.second = dist;
-                best.first = *(current->curve);
+                hValues.push_back(compute_hValue(j, LSHvector, hInfo));
+                
+            }
+            long int ID = compute_IDvalue(hValues, hInfo);
+            int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
+            list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
+            typename list<GridNode>::iterator current;
+            for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
+                if (ID != current->ID)
+                {
+                    continue;
+                }
+
+                double dist = discrete_frechet_distance(q,*(current->curve));
+                // cout << dist << endl;
+                if (dist < best.second)
+                {
+                    best.second = dist;
+                    best.first = *(current->curve);
+                }
             }
         }
     }
-    return best;
+    else
+    {
+        cout << "Unexpected error occured: Point dimension must be 1 for continuous / 2 for discrete frechet distance." << endl;
+        exit (EXIT_FAILURE);
+    }
     
+    return best;
 }

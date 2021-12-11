@@ -111,7 +111,7 @@ Curve snapToGrid(Curve curve, std::pair<double,double> tShiftGrid, double delta)
 void padding(Curve *curve, int dimension);
 
 // Produce the hash key from the snapped curve (2D).
-std::vector<double> keyLSHvector2D(Curve curve, int dimension);
+std::vector<double> keyLSHvector2D(Curve curve);
 
 // Filter time series to keep the important points.
 void filtering(Curve *curve, double epsilon);
@@ -123,6 +123,6 @@ Curve snapToGrid(Curve curve, double delta);
 void minima_maxima(Curve *curve);
 
 // Produce the hash key from the snapped curve (1D).
-std::vector<double> keyLSHvector1D(Curve curve, int dimension);
+std::vector<double> keyLSHvector1D(Curve curve);
 
 #endif
