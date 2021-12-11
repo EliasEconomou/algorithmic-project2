@@ -322,23 +322,23 @@ void time_series_ContinuousFrechet(string inputFile, string queryFile, string ou
     Vector_of_curves queryData;
     queryData = curve_parsing(queryFile, pointDim);
 
-    // ofstream out (outputFile);
+    ofstream out (outputFile);
 
-    // std::cout << "Writing to output file..." << endl;
-    // for (int i = 0; i < queryData.curves.size(); i++)
-    // {
-    //     out << "Query: " << queryData.curves[i].curveID << endl;
-    //     double lshTime, trueTime;
-    //     pair<Curve,double> lshBestPointDist;
-    //     // pair<Point,double> trueBestPointsDists;
-    //     lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
-    //     out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
-    //     // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
+    std::cout << "Writing to output file..." << endl;
+    for (int i = 0; i < queryData.curves.size(); i++)
+    {
+        out << "Query: " << queryData.curves[i].curveID << endl;
+        double lshTime, trueTime;
+        pair<Curve,double> lshBestPointDist;
+        // pair<Point,double> trueBestPointsDists;
+        lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
+        out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
+        // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
         
-    // }
-    // out << endl;
-    // out.close();
+    }
+    out << endl;
+    out.close();
 
-    // std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
+    std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
 
 }

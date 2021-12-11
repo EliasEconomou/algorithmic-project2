@@ -40,9 +40,9 @@ void GridTable::GridInsert(Curve *c, LSH_hash_info *hInfo)
 
   if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
   {
-    Curve filteredCurve = *c;
-    filtering(&filteredCurve, this->epsilon);
-    Curve gridCurve = snapToGrid(filteredCurve,this->delta);
+    //Curve filteredCurve = *c; //todo delete
+    filtering(c, this->epsilon);
+    Curve gridCurve = snapToGrid(*c,this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector1D(gridCurve);

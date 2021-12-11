@@ -21,6 +21,7 @@ EXEC = search.out
 
 # ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 3 -M 100 -probes 10 -o ../../outputFile -algorithm LSH
 
+#---------------------------------------#
 
     # Aii) DISCRETE FRECHET
 
@@ -28,8 +29,9 @@ EXEC = search.out
 # ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
 
         # DATAFILE: mydataFile.csv
-ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
+# ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
 
+#---------------------------------------#
 
     # Aiii) CONTINUOUS FRECHET
 
@@ -37,7 +39,7 @@ ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes
 # ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
 
         # DATAFILE mydataFile.csv
-# ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
+ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
 
 #----------------------------------------------------------------------------#
 

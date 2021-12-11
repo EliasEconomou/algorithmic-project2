@@ -538,7 +538,7 @@ pair<Curve,double> lsh_approximate_NN(Curve q, vector<GridTable> gridTables, LSH
 
     if (gridTables[0].pointDim == 1) // CONTINUOUS FRECHET
     {
-        /* code */
+        cout << "continuous distance from fred TODO" << endl;
     }
     else if (gridTables[0].pointDim == 2) // DISCRETE FRECHET
     {
