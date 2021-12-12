@@ -561,45 +561,78 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
             int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
             list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
             typename list<GridNode>::iterator current;
-            for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
+
+//----------------------------------------------------------------------------------------------//
+            //CONVERT Q TO FRED CURVE TYPE
+
+            Points FredPoints(q.cpoints.size());
+            
+            for (int i = 0; i < q.cpoints.size(); i++)
+            {
+                Point FredPoint(1);
+                FredPoint.assign(1,q.cpoints[i].vpoint[0]);
+                //std::cout << FredPoint << endl;
+                FredPoints.push_back(FredPoint);
+            }
+
+            // cout << "PRINTING FredPoints" << endl;
+            // cout << "FredPoints size: " << FredPoints.size() << endl;
+            // for (int i = 0; i < FredPoints.size(); i++)
+            // {
+            //     cout << FredPoints[i];
+            // }
+            // cout << endl;
+
+            Curve FredCurve(FredPoints,"0");
+
+            cout << "PRINTING FredCurve" << endl;
+            cout << "FredCurve size: " << FredCurve.size() << endl;
+            for (int i = 0; i < FredCurve.size(); i++)
+            {
+                cout << FredCurve.get(i);
+            }
+            cout << endl;
+
+            //CONVERT Q TO FRED CURVE TYPE END
+//----------------------------------------------------------------------------------------------//
+
+            for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) 
+            {
                 if (ID != current->ID)
                 {
                     continue;
                 }
-                //CONVERT Q AND CURRENT->CURVE TO FRED CURVE TYPE
-                Points FredPoints(q.cpoints.size());
+                
+//----------------------------------------------------------------------------------------------//
+                //CONVERT CURRENT->CURVE TO FRED CURVE TYPE
+
+                int cSize = current->curve->cpoints.size();
+                Points FredPoints2(cSize);
                
-                for (int i = 0; i < q.cpoints.size(); i++)
+                for (int i = 0; i < current->curve->cpoints.size(); i++)
                 {
-                    Point FredPoint(1);
-                    FredPoint.assign(1,q.cpoints[i].vpoint[0]);
-                    std::cout << FredPoint << endl;
-                    FredPoints.push_back(FredPoint);
+                    Point FredPoint2(1);
+                    FredPoint2.assign(1,current->curve->cpoints[i].vpoint[0]);
+                    // std::cout << FredPoint2 << endl;
+                    FredPoints2.push_back(FredPoint2);
                 }
+                Curve FredCurve2(FredPoints2,"0");
 
                 cout << "PRINTING FredPoints" << endl;
-                cout << "FredPoints size: " << FredPoints.size() << endl;
-                for (int i = 0; i < FredPoints.size(); i++)
+                cout << "FredPoints size: " << FredPoints2.size() << endl;
+                for (int i = 0; i < FredPoints2.size(); i++)
                 {
-                    cout << FredPoints[i];
+                    cout << FredPoints2[i];
                 }
                 cout << endl;
 
-                Curve FredCurve(FredPoints,"0");
-
-                cout << "PRINTING FredCurve" << endl;
-                cout << "FredCurve size: " << FredCurve.size() << endl;
-                for (int i = 0; i < FredCurve.size(); i++)
-                {
-                    cout << FredCurve.get(i);
-                }
-                cout << endl;
+//----------------------------------------------------------------------------------------------//
 
                 
+                Frechet::Continuous::Distance d = Frechet::Continuous::distance(FredCurve,FredCurve2);
+                double dist = d.value;
                 
-
-                
-                double dist = discrete_frechet_distance(q,*(current->curve));
+                // double dist = discrete_frechet_distance(q,*(current->curve));
                 // cout << dist << endl;
                 if (dist < best.second)
                 {

@@ -36,10 +36,10 @@ EXEC = search.out
     # Aiii) CONTINUOUS FRECHET
 
         # DATAFILE nasdaq2017_LQ.csv
-# ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
+ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
 
         # DATAFILE mydataFile.csv
-ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
+# ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
 
 #----------------------------------------------------------------------------#
 
