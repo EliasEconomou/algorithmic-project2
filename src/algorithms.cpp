@@ -565,7 +565,7 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
 //----------------------------------------------------------------------------------------------//
             //CONVERT Q TO FRED CURVE TYPE
 
-            Points FredPoints(q.cpoints.size());
+            Points FredPoints(q.cpoints[0].vpoint.size());
             
             for (int i = 0; i < q.cpoints.size(); i++)
             {
@@ -606,8 +606,8 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
 //----------------------------------------------------------------------------------------------//
                 //CONVERT CURRENT->CURVE TO FRED CURVE TYPE
 
-                int cSize = current->curve->cpoints.size();
-                Points FredPoints2(cSize);
+                // int cSize = current->curve->cpoints.size();
+                Points FredPoints2(current->curve->cpoints[0].vpoint.size());
                
                 for (int i = 0; i < current->curve->cpoints.size(); i++)
                 {
