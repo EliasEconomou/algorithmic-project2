@@ -89,7 +89,7 @@ void calculate_centroids(Cluster_of_points &cluster){
             for (int k = 0 ; k < new_centroid.vpoint.size() ; k++){
                 new_centroid.vpoint[k] = new_centroid.vpoint[k] / cluster.points[i].points.size(); 
             }
-            new_centroid.itemID=0;
+            new_centroid.itemID="0";
             new_centroids.push_back(new_centroid);
             new_centroid.vpoint.clear();
         }
@@ -356,10 +356,10 @@ Cluster_of_points cluster_LSH(Vector_of_points &Data, Cluster_of_points &cluster
 
     bool stopflag=false;
     double R;
-    unordered_map<int,int> Data_Found_map;
-    unordered_map<int,int>::iterator it1;
-    unordered_map<int,double> PointsInR;
-    unordered_map<int,double>::iterator it2;
+    unordered_map<string,int> Data_Found_map;
+    unordered_map<string,int>::iterator it1;
+    unordered_map<string,double> PointsInR;
+    unordered_map<string,double>::iterator it2;
 
     // ---CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS--- 
     double min_dist = MAXFLOAT;
@@ -493,10 +493,10 @@ Cluster_of_points cluster_Hypercube(Vector_of_points &Data, Cluster_of_points &c
 
     bool stopflag=false;
     double R;
-    unordered_map<int,int> Data_Found_map;
-    unordered_map<int,int>::iterator it1;
-    unordered_map<int,double> PointsInR;
-    unordered_map<int,double>::iterator it2;
+    unordered_map<string,int> Data_Found_map;
+    unordered_map<string,int>::iterator it1;
+    unordered_map<string,double> PointsInR;
+    unordered_map<string,double>::iterator it2;
 
     //CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS
     double min_dist = MAXFLOAT;
