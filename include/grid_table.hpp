@@ -10,8 +10,6 @@
 #include "point_functions.hpp"
 #include "hash_functions.hpp"
 
-#define EPSILON 0.1
-
 
 class GridNode
 {

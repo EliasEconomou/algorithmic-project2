@@ -3,12 +3,30 @@
 using namespace std;
 
 
+// Convert ClassCurve to Fred's curve to calculate continuous frechet distance between curves.
+Curve cont_convert_curve(ClassCurve curve)
+{
+    Points FredPoints(curve.cpoints[0].vpoint.size());
+    for (int i = 0; i < curve.cpoints.size(); i++)
+    {
+        Point FredPoint(1);
+        FredPoint.assign(1,curve.cpoints[i].vpoint[0]);
+        //std::cout << FredPoint << endl;
+        FredPoints.push_back(FredPoint);
+    }
+    Curve FredCurve(FredPoints,"0");
+    return FredCurve;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TRUE //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData)
+pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData, double &time)
 {
+    using namespace std::chrono;
+    high_resolution_clock::time_point start = high_resolution_clock::now();
     ClassPoint b;
     pair<ClassPoint,double> best;
     best.first = b; //best point-candidate
@@ -24,6 +42,9 @@ pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData)
         }
         
     }
+    high_resolution_clock::time_point end = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(end - start);
+    time = time_span.count();
     return best;
 
 }
@@ -67,12 +88,15 @@ set<pair<ClassPoint,double>, CompDist> true_nNN(ClassPoint q, int N, Vector_of_p
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, vector<HashTable> hashTables, LSH_hash_info *hInfo)
+pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, vector<HashTable> hashTables, LSH_hash_info *hInfo, double &time)
 {
     ClassPoint b;
     pair<ClassPoint,double> best;
     best.first = b; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
+
+    using namespace std::chrono;
+    high_resolution_clock::time_point start = high_resolution_clock::now();
 
     int L = hInfo->get_L();
     for (int i = 0; i < L; i++) {
@@ -107,6 +131,11 @@ pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, vector<HashTable> hashT
             }
         }
     }
+
+    high_resolution_clock::time_point end = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(end - start);
+    time = time_span.count();
+
     return best;
     
 }
@@ -527,12 +556,15 @@ std::unordered_map<string,double> cube_approximate_range_search(ClassPoint q, do
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridTables, LSH_hash_info *hInfo)
+pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridTables, LSH_hash_info *hInfo, double &time)
 {
     ClassCurve c;
     pair<ClassCurve,double> best;
     best.first = c; //best point-candidate
     best.second = DBL_MAX; //best distance of best candidate
+
+    using namespace std::chrono;
+    high_resolution_clock::time_point start = high_resolution_clock::now();
 
     int L = hInfo->get_L();
 
@@ -562,39 +594,8 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
             list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
             typename list<GridNode>::iterator current;
 
-//----------------------------------------------------------------------------------------------//
-            //CONVERT Q TO FRED CURVE TYPE
-
-            Points FredPoints(q.cpoints[0].vpoint.size());
-            
-            for (int i = 0; i < q.cpoints.size(); i++)
-            {
-                Point FredPoint(1);
-                FredPoint.assign(1,q.cpoints[i].vpoint[0]);
-                //std::cout << FredPoint << endl;
-                FredPoints.push_back(FredPoint);
-            }
-
-            // cout << "PRINTING FredPoints" << endl;
-            // cout << "FredPoints size: " << FredPoints.size() << endl;
-            // for (int i = 0; i < FredPoints.size(); i++)
-            // {
-            //     cout << FredPoints[i];
-            // }
-            // cout << endl;
-
-            Curve FredCurve(FredPoints,"0");
-
-            cout << "PRINTING FredCurve" << endl;
-            cout << "FredCurve size: " << FredCurve.size() << endl;
-            for (int i = 0; i < FredCurve.size(); i++)
-            {
-                cout << FredCurve.get(i);
-            }
-            cout << endl;
-
-            //CONVERT Q TO FRED CURVE TYPE END
-//----------------------------------------------------------------------------------------------//
+            // Convert query curve q to be conpatible with Frechet::Continuous::distance
+            Curve QueryFredCurve = cont_convert_curve(q);
 
             for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) 
             {
@@ -603,41 +604,31 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
                     continue;
                 }
                 
-//----------------------------------------------------------------------------------------------//
-                //CONVERT CURRENT->CURVE TO FRED CURVE TYPE
-
-                // int cSize = current->curve->cpoints.size();
-                Points FredPoints2(current->curve->cpoints[0].vpoint.size());
-               
-                for (int i = 0; i < current->curve->cpoints.size(); i++)
-                {
-                    Point FredPoint2(1);
-                    FredPoint2.assign(1,current->curve->cpoints[i].vpoint[0]);
-                    // std::cout << FredPoint2 << endl;
-                    FredPoints2.push_back(FredPoint2);
-                }
-                Curve FredCurve2(FredPoints2,"0");
-
-                cout << "PRINTING FredPoints" << endl;
-                cout << "FredPoints size: " << FredPoints2.size() << endl;
-                for (int i = 0; i < FredPoints2.size(); i++)
-                {
-                    cout << FredPoints2[i];
-                }
-                cout << endl;
-
-//----------------------------------------------------------------------------------------------//
-
+                // Convert current bucket curve to be conpatible with Frechet::Continuous::distance
+                Curve CurrentFredCurve = cont_convert_curve(*current->curve);
                 
-                Frechet::Continuous::Distance d = Frechet::Continuous::distance(FredCurve,FredCurve2);
+                Frechet::Continuous::Distance d = Frechet::Continuous::distance(QueryFredCurve,CurrentFredCurve);
                 double dist = d.value;
-                
-                // double dist = discrete_frechet_distance(q,*(current->curve));
-                // cout << dist << endl;
                 if (dist < best.second)
                 {
                     best.second = dist;
                     best.first = *(current->curve);
+                }
+            }
+            if (best.second == DBL_MAX)
+            {
+                for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) 
+                {
+                    // Convert current bucket curve to be conpatible with Frechet::Continuous::distance
+                    Curve CurrentFredCurve = cont_convert_curve(*current->curve);
+                    
+                    Frechet::Continuous::Distance d = Frechet::Continuous::distance(QueryFredCurve,CurrentFredCurve);
+                    double dist = d.value;
+                    if (dist < best.second)
+                    {
+                        best.second = dist;
+                        best.first = *(current->curve);
+                    }
                 }
             }
         }
@@ -665,7 +656,8 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
             int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
             list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
             typename list<GridNode>::iterator current;
-            for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
+            for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current )
+            {
                 if (ID != current->ID)
                 {
                     continue;
@@ -679,6 +671,20 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
                     best.first = *(current->curve);
                 }
             }
+            if (best.second == DBL_MAX)
+            {
+                for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current )
+                {
+                    double dist = discrete_frechet_distance(q,*(current->curve));
+                    // cout << dist << endl;
+                    if (dist < best.second)
+                    {
+                        best.second = dist;
+                        best.first = *(current->curve);
+                    }
+                }
+            }
+            
         }
     }
     else
@@ -686,6 +692,63 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
         cout << "Unexpected error occured: ClassPoint dimension must be 1 for continuous / 2 for discrete frechet distance." << endl;
         exit (EXIT_FAILURE);
     }
+
+    high_resolution_clock::time_point end = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(end - start);
+    time = time_span.count();
     
     return best;
+}
+
+
+pair<ClassCurve,double> true_NN(ClassCurve q, Vector_of_curves inputData, double &time)
+{
+    ClassCurve b;
+    pair<ClassCurve,double> best;
+    best.first = b; //best Curve-candidate
+    best.second = DBL_MAX; //best distance of best candidate
+
+    using namespace std::chrono;
+    high_resolution_clock::time_point start = high_resolution_clock::now();
+
+    if (q.cpoints[0].vpoint.size() == 1)
+    {
+        // Convert query curve q to be conpatible with Frechet::Continuous::distance
+        Curve QueryFredCurve = cont_convert_curve(q);
+
+        for (int i = 0; i < inputData.curves.size(); i++)
+        {
+            // Convert data curve to be conpatible with Frechet::Continuous::distance
+            Curve DataFredCurve = cont_convert_curve(inputData.curves[i]);
+
+            Frechet::Continuous::Distance d = Frechet::Continuous::distance(QueryFredCurve,DataFredCurve);
+            double dist = d.value;
+            if (dist < best.second)
+            {
+                best.second = dist;
+                best.first = inputData.curves[i];
+            }
+            
+        }
+    }
+    else if (q.cpoints[0].vpoint.size() == 2)
+    {
+        for (int i = 0; i < inputData.curves.size(); i++)
+        {
+            double dist = discrete_frechet_distance(q,inputData.curves[i]);
+            if (dist < best.second)
+            {
+                best.second = dist;
+                best.first = inputData.curves[i];
+            }
+            
+        }
+    }
+
+    high_resolution_clock::time_point end = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(end - start);
+    time = time_span.count();
+
+    return best;
+
 }

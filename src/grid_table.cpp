@@ -1,5 +1,7 @@
 #include "../include/grid_table.hpp"
 
+#define EPSILON 1
+
 using namespace std;
 
 
@@ -20,8 +22,9 @@ GridTable::GridTable(int bucketsNumber, double delta, int curveDim, int pointDim
   }
   else if (pointDim == 2)
   {
-    this->tShiftGrid.first = random_double(0,delta);
-    this->tShiftGrid.second = random_double(0,delta);
+    double randt = random_double(0,delta);
+    this->tShiftGrid.first = randt;
+    this->tShiftGrid.second = randt;
     this->epsilon = -1.0;
   }
   this->pointDim = pointDim;
@@ -40,8 +43,9 @@ void GridTable::GridInsert(ClassCurve *c, LSH_hash_info *hInfo)
 
   if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
   {
-    //ClassCurve filteredCurve = *c; //todo delete
+    //cout << c->curveID << " has " << c->cpoints.size() << endl;
     filtering(c, this->epsilon);
+    //cout << c->curveID << " has " << c->cpoints.size() << endl;
     ClassCurve gridCurve = snapToGrid(*c,this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
@@ -76,10 +80,10 @@ void GridTable::GridInsert(ClassCurve *c, LSH_hash_info *hInfo)
   }
 
   long int ID = compute_IDvalue(hValues, hInfo);
-  //cout << "." << ID << ".  ";
+  // cout << "." << ID << ".  ";
   int g = compute_gValue(ID, this->bucketsNumber);
   lists[g].push_back(GridNode(c, ID));
-  //cout << "." << g << ".  ";
+  // cout << "." << g << ".  ";
 }
 
 

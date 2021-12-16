@@ -31,14 +31,14 @@ struct CompDist
 
 //TRUE
 
-std::pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData);
+std::pair<ClassPoint,double> true_NN(ClassPoint q, Vector_of_points inputData, double &time);
 
 std::set<std::pair<ClassPoint,double>, CompDist> true_nNN(ClassPoint q, int N, Vector_of_points inputData, double &time);
 
 
 //LSH
 
-std::pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, std::vector<HashTable> hashTables, LSH_hash_info *hInfo);
+std::pair<ClassPoint,double> lsh_approximate_NN(ClassPoint q, std::vector<HashTable> hashTables, LSH_hash_info *hInfo, double &time);
 
 std::set<std::pair<ClassPoint,double>, CompDist> lsh_approximate_nNN(ClassPoint q, int N, std::vector<HashTable> hashTables, LSH_hash_info *hInfo, double &time);
 
@@ -56,7 +56,8 @@ std::unordered_map<std::string,double> cube_approximate_range_search(ClassPoint 
 
 //DISCRETE FRECHET
 
-std::pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, std::vector<GridTable> gridTables, LSH_hash_info *hInfo);
+std::pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, std::vector<GridTable> gridTables, LSH_hash_info *hInfo, double &time);
 
+std::pair<ClassCurve,double> true_NN(ClassCurve q, Vector_of_curves inputData, double &time);
 
 #endif

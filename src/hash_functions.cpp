@@ -1,5 +1,5 @@
 #include "../include/hash_functions.hpp"
-#define M_PAD 100000 //used for padding grid-curves
+#define M_PAD 1000 //used for padding grid-curves
 
 using namespace std;
 
@@ -7,7 +7,7 @@ using namespace std;
 // Returns w
 int compute_w(void)
 {
-    return 50;
+    return 600;
 }
 
 

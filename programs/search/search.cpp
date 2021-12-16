@@ -14,16 +14,17 @@ int main(int argc, char** argv) {
     int k=-1; //k will get a default value later according to algorithm given
     int L=5, M=10, probes=2;
     double delta=-1;
+    bool FrechetBrute=0; //0 computes true distance in frechet algorithms, 1 does not. (default 0 - compute)
     string word;
 
-    for (int i = 1; i < argc; i+=2) //argument options always start with '-'
-    {
-        if ((argv[i][0]!='-') || (argv[i+1]==NULL))
-        {
-            cout << "Error: Wrong argument." << endl;
-            return -1;
-        }
-    }
+    // for (int i = 1; i < argc; i+=2) //argument options always start with '-'
+    // {
+    //     if ((argv[i][0]!='-') || (argv[i+1]==NULL))
+    //     {
+    //         cout << "Error: Wrong argument." << endl;
+    //         return -1;
+    //     }
+    // }
     
     //---Parse arguments---
     for (int i = 1; i < argc; i++){
@@ -116,9 +117,14 @@ int main(int argc, char** argv) {
                 return -1;
             }
         }
+        else if (word == "-nobrute")
+        {
+            FrechetBrute = 1;
+        }
+        
         else{
 
-            cout << "Error: Wrong argument." << word << endl;
+            cout << "Error: Wrong argument: " << word << endl;
             return -1;
         }
     }
@@ -172,11 +178,11 @@ int main(int argc, char** argv) {
     {
         if (metric == "discrete")
         {
-            time_series_DiscreteFrechet(inputFile, queryFile, outputFile, k, L, delta);
+            time_series_DiscreteFrechet(inputFile, queryFile, outputFile, k, L, delta, FrechetBrute);
         }
         else if (metric == "continuous")
         {
-            time_series_ContinuousFrechet(inputFile, queryFile, outputFile, k, L, delta);
+            time_series_ContinuousFrechet(inputFile, queryFile, outputFile, k, L, delta, FrechetBrute);
         }
     }
     

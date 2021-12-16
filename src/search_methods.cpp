@@ -1,5 +1,5 @@
 #include "../include/search_methods.hpp"
-#define MAX_HAMMING_DIST 10
+#define MAX_HAMMING_DIST 8
 
 using namespace std;
 
@@ -7,7 +7,7 @@ using namespace std;
 // Function for i) assigment using LSH.
 void time_series_LSH(string inputFile, string queryFile, string outputFile, int k, int L)
 {
-    cout << "time_series_LSH " << endl;
+    cout << "Executing LSH for vectors." << endl;
     if (inputFile == "0")
     {
         cout << "Give path to input file: ";
@@ -16,16 +16,6 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
 
     Vector_of_points inputData;
     inputData = parsing(inputFile);
-
-    // int dimension = inputData.points[0].vpoint.size();
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     for (int j = 0; j < dimension; j++)
-    //     {
-    //         cout << inputData.points[i].vpoint[j] << "  ";
-    //     }
-    //     cout << endl << endl;
-    // }
     
     int vectorsNumber = inputData.points.size();
     int dimension = inputData.points[0].vpoint.size();
@@ -68,27 +58,47 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
     ofstream out (outputFile);
 
     std::cout << "Writing to output file..." << endl;
+
+    double lshSumTime = 0.0;
+    double trueSumTime = 0.0;
+    double lshTime,trueTime;
+    double MAF = 0.0;
     for (int i = 0; i < queryData.points.size(); i++)
     {
         out << "Query: " << queryData.points[i].itemID << endl;
-        double lshTime, trueTime;
-        set<pair<ClassPoint,double>, CompDist> lshBestPointsDists;
-        set<pair<ClassPoint,double>, CompDist> trueBestPointsDists;
-        lshBestPointsDists = lsh_approximate_nNN(queryData.points[i], 1, hashTables, &hInfo, lshTime);
-        trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
-        int neighbor = 1;
-        auto it1 = lshBestPointsDists.begin();
-        auto it2 = trueBestPointsDists.begin();
-        for (it1,it2; it1 != lshBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
+        out << "Algorithm: " << "LSH_Vector" << endl;
+        pair<ClassPoint,double> lshBestCurveDist;
+        pair<ClassPoint,double> trueBestCurveDist;
+        lshTime = 0.0;
+        trueTime = 0.0;
+
+        lshBestCurveDist = lsh_approximate_NN(queryData.points[i], hashTables, &hInfo, lshTime);
+        lshSumTime += lshTime;
+        // cout << "Lsh time " << lshTime << ". Now total lsh time is " << lshSumTime << "." << endl;
+        out << "Approximate Nearest neighbor: " << lshBestCurveDist.first.itemID << endl;
+        
+            trueBestCurveDist = true_NN(queryData.points[i],inputData,trueTime);
+            trueSumTime += trueTime;
+            // cout << "True time " << trueTime << ". Now total true time is " << trueSumTime << "." << endl;
+            out << "True Nearest neighbor: " << trueBestCurveDist.first.itemID << endl;
+        
+        out << "distanceApproximate: " << lshBestCurveDist.second << endl;
+        out << "distanceTrue: " << trueBestCurveDist.second << endl;
+        
+        out << endl;
+        
+        double AF = lshBestCurveDist.second/trueBestCurveDist.second;
+        if (MAF <= AF)
         {
-            out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
-            out << "distanceLSH: " << it1->second << endl;
-            out << "distanceTrue: " << it2->second << endl;
-            neighbor++;
+            MAF = AF;
         }
-        out << "tLSH: " << lshTime << endl;
-        out << "tTrue: " << trueTime << endl;
     }
+    
+    out << endl;
+    out << "tApproximateAverage: " << lshSumTime/queryData.points.size() << endl;
+    out << "tTrueAverage: " << trueSumTime/queryData.points.size() << endl;
+    out << "MAF: " << MAF << endl;
+
     out << endl;
     out.close();
 
@@ -99,14 +109,13 @@ void time_series_LSH(string inputFile, string queryFile, string outputFile, int 
 // Function for i) assigment using Hypercube.
 void time_series_Hypercube(string inputFile, string queryFile, string outputFile, int k, int M, int probes)
 {
-    cout << "time_series_Hypercube" << endl;
+    cout << "Executing Hypercube." << endl;
     if (inputFile == "0")
     {
         cout << "Give path to input file: ";
         cin >> inputFile;
     }
     
-
     Vector_of_points inputData;
     inputData = parsing(inputFile);
     
@@ -123,60 +132,75 @@ void time_series_Hypercube(string inputFile, string queryFile, string outputFile
         cubeTable.CTinsert(&inputData.points[i], &hInfo);
     }
 
-    // if (queryFile == "0")
-    // {
-    //     cout << "Give path to query file: ";
-    //     cin >> queryFile;
-    // }
+    if (queryFile == "0")
+    {
+        cout << "Give path to query file: ";
+        cin >> queryFile;
+    }
 
-    // if (outputFile == "0")
-    // {
-    //     cout << "Give path to output file: ";
-    //     cin >> outputFile;
-    // }
+    if (outputFile == "0")
+    {
+        cout << "Give path to output file: ";
+        cin >> outputFile;
+    }
     
-    // Vector_of_points queryData;
-    // queryData = parsing(queryFile);
+    Vector_of_points queryData;
+    queryData = parsing(queryFile);
 
+    ofstream out (outputFile);
 
-    // ofstream out (outputFile);
+    std::cout << "Writing to output file..." << endl;
 
-    // std::cout << "Writing to output file..." << endl;
-    // for (int i = 0; i < queryData.points.size(); i++)
-    // {
-    //     out << "Query: " << queryData.points[i].itemID << endl;
-    //     double cubeTime, trueTime;
-    //     set<pair<ClassPoint,double>, CompDist> cubeBestPointsDists;
-    //     set<pair<ClassPoint,double>, CompDist> trueBestPointsDists;
-    //     cubeBestPointsDists = cube_approximate_nNN(queryData.points[i], N, cubeTable, &hInfo, cubeTime);
-    //     trueBestPointsDists = true_nNN(queryData.points[i], N, inputData, trueTime);
-    //     int neighbor = 1;
-    //     auto it1 = cubeBestPointsDists.begin();
-    //     auto it2 = trueBestPointsDists.begin();
-    //     for (it1,it2; it1 != cubeBestPointsDists.end(),it2 != trueBestPointsDists.end(); ++it1,++it2)
-    //     {
-    //         out << "Nearest neighbor-" << neighbor << ": " << it1->first.itemID << endl;
-    //         out << "distanceHypercube: " << it1->second << endl;
-    //         out << "distanceTrue: " << it2->second << endl;
-    //         neighbor++;
-    //     }
-    //     out << "tHypercube: " << cubeTime << endl;
-    //     out << "tTrue: " << trueTime << endl;
-    //     unordered_map<int,double> PointsInR = cube_approximate_range_search(queryData.points[i], R, cubeTable, &hInfo);
-    //     out << "R-near neighbors:" << endl;
-    //     for (auto it = PointsInR.begin(); it != PointsInR.end(); ++it)
-    //     {
-    //         out << it->first << endl;
-    //     }
-    // }
-    // out << endl;
-    // out.close();
+    double cubeSumTime = 0.0;
+    double trueSumTime = 0.0;
+    double cubeTime,trueTime;
+    double MAF = 0.0;
+    for (int i = 0; i < queryData.points.size(); i++)
+    {
+        out << "Query: " << queryData.points[i].itemID << endl;
+        out << "Algorithm: " << "Hypercube" << endl;
+        set<pair<ClassPoint,double>, CompDist> cubeBestPointsDists;
+        set<pair<ClassPoint,double>, CompDist> trueBestPointsDists;
+        cubeTime = 0.0;
+        trueTime = 0.0;
+
+        cubeBestPointsDists = cube_approximate_nNN(queryData.points[i], 1, cubeTable, &hInfo, cubeTime);
+        cubeSumTime += cubeTime;
+        trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
+        trueSumTime += trueTime;
+        
+        auto it1 = cubeBestPointsDists.begin();
+        auto it2 = trueBestPointsDists.begin();
+        out << "Approximate Nearest neighbor: " << it1->first.itemID << endl;
+        out << "True Nearest neighbor: " << it2->first.itemID << endl;
+        out << "distanceApproximate: " << it1->second << endl;
+        out << "distanceTrue: " << it2->second << endl;
+
+        out << endl;
+        
+        double AF = it1->second/it2->second;
+        if (MAF <= AF)
+        {
+            MAF = AF;
+        }
+    }
+
+    out << endl;
+    out << "tApproximateAverage: " << cubeSumTime/queryData.points.size() << endl;
+    out << "tTrueAverage: " << trueSumTime/queryData.points.size() << endl;
+    out << "MAF: " << MAF << endl;
+
+    out << endl;
+    out.close();
+
+    std::cout << "Operation completed successfully." << endl << "Exiting." << endl;
+
 }
 
 // Function for ii) assigment using Discrete Ferchet.
-void time_series_DiscreteFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta)
+void time_series_DiscreteFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta, bool FrechetBrute)
 {
-    cout << "time_series_DiscreteFrechet" << endl;
+    cout << "Executing Discrete Frechet for curves." << endl;
     if (inputFile == "0")
     {
         cout << "Give path to input file: ";
@@ -189,15 +213,6 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
 
     int curveDim = inputData.curves[0].cpoints.size(); // number of points in curves
     int pointDim = inputData.curves[0].cpoints[0].vpoint.size(); // dimension of points in curve
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     for (int j = 0; j < dimension; j++)
-    //     {
-    //         cout << "(" << inputData.curves[i].cpoints[j].vpoint[0] << " - " << inputData.curves[i].cpoints[j].vpoint[1] << ")" << "  ";
-    //     }
-    //     cout << endl << endl;
-    // }
-
     int curvesNumber = inputData.curves.size();
     int bucketsNumber = curvesNumber/8;
     
@@ -240,16 +255,56 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
     ofstream out (outputFile);
 
     std::cout << "Writing to output file..." << endl;
+
+    double lshSumTime = 0.0;
+    double trueSumTime = 0.0;
+    double lshTime,trueTime;
+    double MAF = 0.0;
     for (int i = 0; i < queryData.curves.size(); i++)
     {
         out << "Query: " << queryData.curves[i].curveID << endl;
-        double lshTime, trueTime;
-        pair<ClassCurve,double> lshBestPointDist;
-        // pair<ClassPoint,double> trueBestPointsDists;
-        lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
-        out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
-        // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
+        out << "Algorithm: " << "LSH_Frechet_Discrete" << endl;
+        pair<ClassCurve,double> lshBestCurveDist;
+        pair<ClassCurve,double> trueBestCurveDist;
+        lshTime = 0.0;
+        trueTime = 0.0;
+
+        lshBestCurveDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo, lshTime);
+        lshSumTime += lshTime;
+        // cout << "Lsh time " << lshTime << ". Now total lsh time is " << lshSumTime << "." << endl;
+        out << "Approximate Nearest neighbor: " << lshBestCurveDist.first.curveID << endl;
         
+        if (FrechetBrute == 0)
+        {
+            trueBestCurveDist = true_NN(queryData.curves[i],inputData,trueTime);
+            trueSumTime += trueTime;
+            // cout << "True time " << trueTime << ". Now total true time is " << trueSumTime << "." << endl;
+            out << "True Nearest neighbor: " << trueBestCurveDist.first.curveID << endl;
+        }
+        
+        out << "distanceApproximate: " << lshBestCurveDist.second << endl;
+        if (FrechetBrute == 0)
+        {
+            out << "distanceTrue: " << trueBestCurveDist.second << endl;
+        }
+        out << endl;
+        
+        if (FrechetBrute == 0)
+        {
+            double AF = lshBestCurveDist.second/trueBestCurveDist.second;
+            if (MAF <= AF)
+            {
+                MAF = AF;
+            }
+        }
+    }
+    
+    out << endl;
+    out << "tApproximateAverage: " << lshSumTime/queryData.curves.size() << endl;
+    if (FrechetBrute == 0)
+    {
+        out << "tTrueAverage: " << trueSumTime/queryData.curves.size() << endl;
+        out << "MAF: " << MAF << endl;
     }
     out << endl;
     out.close();
@@ -259,9 +314,9 @@ void time_series_DiscreteFrechet(string inputFile, string queryFile, string outp
 }
 
 // Function for iii) assigment using Continuous Frechet.
-void time_series_ContinuousFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta)
+void time_series_ContinuousFrechet(string inputFile, string queryFile, string outputFile, int k, int L, double delta, bool FrechetBrute)
 {
-    cout << "time_series_ContinuousFrechet" << endl;
+    cout << "Executing Continuous Frechet for curves." << endl;
     if (inputFile == "0")
     {
         cout << "Give path to input file: ";
@@ -274,15 +329,6 @@ void time_series_ContinuousFrechet(string inputFile, string queryFile, string ou
 
     int curveDim = inputData.curves[0].cpoints.size(); // number of points in curves
     int pointDim = inputData.curves[0].cpoints[0].vpoint.size(); // dimension of points in curve
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     for (int j = 0; j < dimension; j++)
-    //     {
-    //         cout << "(" << inputData.curves[i].cpoints[j].vpoint[0] << ")" << "  ";
-    //     }
-    //     cout << endl << endl;
-    // }
-
     int curvesNumber = inputData.curves.size();
     int bucketsNumber = curvesNumber/8;
     
@@ -324,17 +370,55 @@ void time_series_ContinuousFrechet(string inputFile, string queryFile, string ou
 
     ofstream out (outputFile);
 
-    std::cout << "Writing to output file..." << endl;
+    double lshSumTime = 0.0;
+    double trueSumTime = 0.0;
+    double lshTime,trueTime;
+    double MAF = 0.0;
     for (int i = 0; i < queryData.curves.size(); i++)
     {
         out << "Query: " << queryData.curves[i].curveID << endl;
-        double lshTime, trueTime;
-        pair<ClassCurve,double> lshBestPointDist;
-        // pair<ClassPoint,double> trueBestPointsDists;
-        lshBestPointDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo);
-        out << "Nearest neighbor: " << lshBestPointDist.first.curveID << " and dist: " << lshBestPointDist.second << endl;
-        // trueBestPointsDists = true_nNN(queryData.points[i], 1, inputData, trueTime);
+        out << "Algorithm: " << "LSH_Frechet_Continuous" << endl;
+        pair<ClassCurve,double> lshBestCurveDist;
+        pair<ClassCurve,double> trueBestCurveDist;
+        lshTime = 0.0;
+        trueTime = 0.0;
+
+        lshBestCurveDist = lsh_approximate_NN(queryData.curves[i], gridTables, &hInfo, lshTime);
+        lshSumTime += lshTime;
+        // cout << "Lsh time " << lshTime << ". Now total lsh time is " << lshSumTime << "." << endl;
+        out << "Approximate Nearest neighbor: " << lshBestCurveDist.first.curveID << endl;
         
+        if (FrechetBrute == 0)
+        {
+            trueBestCurveDist = true_NN(queryData.curves[i],inputData,trueTime);
+            trueSumTime += trueTime;
+            // cout << "True time " << trueTime << ". Now total true time is " << trueSumTime << "." << endl;
+            out << "True Nearest neighbor: " << trueBestCurveDist.first.curveID << endl;
+        }
+        
+        out << "distanceApproximate: " << lshBestCurveDist.second << endl;
+        if (FrechetBrute == 0)
+        {
+            out << "distanceTrue: " << trueBestCurveDist.second << endl;
+        }
+        out << endl;
+        
+        if (FrechetBrute == 0)
+        {
+            double AF = lshBestCurveDist.second/trueBestCurveDist.second;
+            if (MAF <= AF)
+            {
+                MAF = AF;
+            }
+        }
+    }
+    
+    out << endl;
+    out << "tApproximateAverage: " << lshSumTime/queryData.curves.size() << endl;
+    if (FrechetBrute == 0)
+    {
+        out << "tTrueAverage: " << trueSumTime/queryData.curves.size() << endl;
+        out << "MAF: " << MAF << endl;
     }
     out << endl;
     out.close();

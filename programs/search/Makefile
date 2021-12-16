@@ -1,46 +1,28 @@
-define newline
-
-
-endef
 
 INCLUDE = ../../include
 SRC = ../../src
 
 CC = g++
-CFLAGS = -std=c++11 -Wall -g -Werror -I$(INCLUDE)
+CFLAGS = -Ofast -ffast-math -fno-trapping-math -ftree-vectorize -std=c++11 -Wall -g -Werror -I$(INCLUDE)
 LDFLAGS = -lm
 
 OBJS = search.o $(SRC)/point_functions.o $(SRC)/hash_table.o $(SRC)/cube_table.o $(SRC)/hash_functions.o $(SRC)/algorithms.o $(SRC)/search_methods.o $(SRC)/grid_table.o $(SRC)/frechet.o $(SRC)/curve.o $(SRC)/config.o $(SRC)/point.o $(SRC)/interval.o $(SRC)/simplification.o
 EXEC = search.out
 
 #----------------------------------------------------------------------------#
-
     # Arguments for make run / make valgrind
-
+#---------------------------------------#
     # Ai) LSH
-
-# ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 3 -M 100 -probes 10 -o ../../outputFile -algorithm LSH
-
+# ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm LSH
 #---------------------------------------#
-
+    # Ai) Hypercube
+ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Hypercube
+#---------------------------------------#
     # Aii) DISCRETE FRECHET
-
-        # DATAFILE: nasdaq2017_LQ.csv
-ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
-
-        # DATAFILE: mydataFile.csv
-# ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 5 -L 2 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.1
-
+# ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.0 -nobrute
 #---------------------------------------#
-
     # Aiii) CONTINUOUS FRECHET
-
-        # DATAFILE nasdaq2017_LQ.csv
-# ARGS = -i ../../nasdaq2017_LQ.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
-
-        # DATAFILE mydataFile.csv
-# ARGS = -i ../../mydataFile.csv -q ../../myqueryFile.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 0.21
-
+# ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 1.0 -nobrute
 #----------------------------------------------------------------------------#
 
 $(EXEC): $(OBJS) $(LIBS)
