@@ -348,13 +348,23 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
     OptimalTraversal.push_back( make_pair(Pi,Qi) );
 
     while (Pi != 0 && Qi != 0){
-
-        double min_value = min(L[Pi-1][Qi],L[Pi][Qi-1]);
-        min_value = min(min_value,L[Pi-1][Qi-1]);
-        if (min_value == 0){
+        int min_value_index;
+        bool min_value_flag = min(L[Pi-1][Qi],L[Pi][Qi-1]) == L[Pi-1][Qi];
+        if (min_value_flag){
+            min_value_flag = min(L[Pi-1][Qi],L[Pi-1][Qi-1]) == L[Pi-1][Qi];
+            if(min_value_flag)min_value_index=0;
+            else min_value_index=2;
+        }
+        else {
+            min_value_flag = min(L[Pi][Qi-1],L[Pi-1][Qi-1]) == L[Pi][Qi-1];
+            if (min_value_flag)min_value_index=1;
+            else min_value_index=2;
+        }
+        
+        if (min_value_index == 0){
             OptimalTraversal.push_front( make_pair(--Pi,Qi) );
         }
-        else if(min_value == 1){
+        else if(min_value_index == 1){
             OptimalTraversal.push_front( make_pair(Pi,--Qi) );
         }
         else{

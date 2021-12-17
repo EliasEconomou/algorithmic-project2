@@ -60,56 +60,56 @@ double silhuette(Cluster_of_points cluster, int i){
 }
 
 double silhuette(Cluster_of_curves cluster, int i){
-//     double si=0;
-//     double sp;
-//     double sum_of_sps;
-//     for (int j = 0; j < cluster.curves[i].curves.size(); j++)
-//     {
-//         //FINDING SECOND CLOSEST CENTROID
-//         double sec_min_dist = MAXFLOAT;
-//         int sec_min_dist_it = -1;
-//         for (int k = 0; k < cluster.centroids.size(); k++)
-//         {
-//             if ( k == i )continue;
-//             // double dist = distance(cluster.curves[i].curves[j].cpoints , cluster.centroids[k].cpoints , 2);
-//             if ( dist < sec_min_dist ){
-//                 sec_min_dist = dist;
-//                 sec_min_dist_it = k;
-//             }
-//         }
-//         double ai = 0;
-//         double dist = 0;
-//         for (int k = 0; k < cluster.curves[i].curves.size() ; k++)
-//         {
-//             if (k==j)continue;
-//             // dist = distance(cluster.curves[i].curves[j].cpoints , cluster.curves[i].curves[k].cpoints , 2);
-//             ai += dist;
-//         }
-//         ai = ai / cluster.curves[i].curves.size();
-//         double bi = 0;
-//         for (int k = 0; k < cluster.curves[sec_min_dist_it].curves.size() ; k++)
-//         {
-//             // double dist = distance(cluster.curves[i].curves[j].cpoints , cluster.curves[sec_min_dist_it].curves[k].cpoints , 2);
-//             bi += dist;
-//         }
-// 
-//         if( cluster.curves[sec_min_dist_it].curves.size() != 0 )bi = bi / cluster.curves[sec_min_dist_it].curves.size();
-//         else bi=0;
-// 
-//         double max;
-//         if (ai>bi)max=ai;
-//         else max=bi;
-// 
-//         if (max != 0 ){
-//             sp = (bi - ai) / max;
-//         }
-//         else sp=0;
-//         sum_of_sps += sp;
-//     }
-//     if ( cluster.curves[i].curves.size() != 0 )si = sum_of_sps / cluster.curves[i].curves.size();
-// 
-//     return si;
-// 
+    double si=0;
+    double sp;
+    double sum_of_sps;
+    for (int j = 0; j < cluster.curves[i].curves.size(); j++)
+    {
+        //FINDING SECOND CLOSEST CENTROID
+        double sec_min_dist = MAXFLOAT;
+        int sec_min_dist_it = -1;
+        for (int k = 0; k < cluster.centroids.size(); k++)
+        {
+            if ( k == i )continue;
+            double dist = discrete_frechet_distance(cluster.curves[i].curves[j] , cluster.centroids[k]);
+            if ( dist < sec_min_dist ){
+                sec_min_dist = dist;
+                sec_min_dist_it = k;
+            }
+        }
+        double ai = 0;
+        double dist = 0;
+        for (int k = 0; k < cluster.curves[i].curves.size() ; k++)
+        {
+            if (k==j)continue;
+            dist = discrete_frechet_distance(cluster.curves[i].curves[j] , cluster.curves[i].curves[k]);
+            ai += dist;
+        }
+        ai = ai / cluster.curves[i].curves.size();
+        double bi = 0;
+        for (int k = 0; k < cluster.curves[sec_min_dist_it].curves.size() ; k++)
+        {
+            double dist = discrete_frechet_distance(cluster.curves[i].curves[j] , cluster.curves[sec_min_dist_it].curves[k]);
+            bi += dist;
+        }
+
+        if( cluster.curves[sec_min_dist_it].curves.size() != 0 )bi = bi / cluster.curves[sec_min_dist_it].curves.size();
+        else bi=0;
+
+        double max;
+        if (ai>bi)max=ai;
+        else max=bi;
+
+        if (max != 0 ){
+            sp = (bi - ai) / max;
+        }
+        else sp=0;
+        sum_of_sps += sp;
+    }
+    if ( cluster.curves[i].curves.size() != 0 )si = sum_of_sps / cluster.curves[i].curves.size();
+
+    return si;
+
 }
 
 
