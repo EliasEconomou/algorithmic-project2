@@ -7,6 +7,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <list>
 #include <random>
 #include <string>
 
@@ -92,6 +93,12 @@ Vector_of_curves curve_parsing(std::string fileName, int dim);
 
 // Compute discrete frechet distance between curves.
 double discrete_frechet_distance (ClassCurve c1, ClassCurve c2);
+
+// blah
+std::list<std::pair<int,int>> FindOptimalTraversal( ClassCurve curve1, ClassCurve curve2 );
+
+//blah
+ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 );
 
 // Parse dataset and return a vector of dataset's vectors.
 Vector_of_points parsing(std::string fileName);

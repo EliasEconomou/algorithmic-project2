@@ -26,6 +26,8 @@ Cluster_of_points initialize_kplusplus(Vector_of_points &Data, Cluster_of_points
 
 Cluster_of_points lloyds(Vector_of_points &Data, Cluster_of_points &cluster, int iter_num_input);
 
+Cluster_of_curves lloyds(Vector_of_curves &Data, Cluster_of_curves &cluster, int iter_num_input);
+
 Cluster_of_points cluster_Classic(Vector_of_points &Data, Cluster_of_points &cluster, int number_of_clusters);
 
 Cluster_of_curves cluster_Classic(Vector_of_curves &Data, Cluster_of_curves &cluster, int number_of_clusters);

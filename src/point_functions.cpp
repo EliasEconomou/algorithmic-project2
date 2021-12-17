@@ -306,3 +306,86 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 
 
 }
+
+
+list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
+    cout << "FINDING OPTIMAL TRAVERSAL" << endl;
+    int c1size = c1.cpoints.size();
+    int c2size = c2.cpoints.size();
+    double L[c1size][c2size];
+
+    for (int i = 0; i < c1size; i++)
+    {
+        for (int j = 0; j < c2size; j++)
+        {
+            vector<double> c1point{c1.cpoints[i].vpoint[0],c1.cpoints[i].vpoint[1]};
+            vector<double> c2point{c2.cpoints[j].vpoint[0],c2.cpoints[j].vpoint[1]};
+            if ((i==0)&&(j==0))
+            {
+                L[i][j] = distance(c1point,c2point,2);
+            }
+            else if (i==0)
+            {
+                L[i][j] = max(distance(c1point,c2point,2),L[1][j-1]);
+            }
+            else if (j==0)
+            {
+                L[i][j] = max(distance(c1point,c2point,2),L[i-1][1]);
+            }
+            else
+            {
+                double prevmin = min(L[i-1][j],L[i][j-1]);
+                prevmin = min(prevmin,L[i-1][j-1]);
+                L[i][j] = max(distance(c1point,c2point,2),prevmin);
+            }
+        }
+    }
+
+    std::list<std::pair<int,int>> OptimalTraversal;
+    int Pi,Qi;
+    Pi = c1size;
+    Qi = c2size;
+    OptimalTraversal.push_back( make_pair(Pi,Qi) );
+
+    while (Pi != 0 && Qi != 0){
+
+        double min_value = min(L[Pi-1][Qi],L[Pi][Qi-1]);
+        min_value = min(min_value,L[Pi-1][Qi-1]);
+        if (min_value == 0){
+            OptimalTraversal.push_front( make_pair(--Pi,Qi) );
+        }
+        else if(min_value == 1){
+            OptimalTraversal.push_front( make_pair(Pi,--Qi) );
+        }
+        else{
+            OptimalTraversal.push_front( make_pair(--Pi,--Qi) );
+        }
+    }
+
+    return OptimalTraversal;
+}
+
+ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
+    cout << "CALCULATING MEAN2CURVES" << endl;
+    list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
+    ClassCurve Mean;
+    for (int i = 0; i < OptimalTraversal.size() ; i++)
+    {
+        pair<int,int> Current_pair;
+        Current_pair = OptimalTraversal.front();
+ 
+        OptimalTraversal.pop_front();
+
+        ClassPoint newPoint;
+        newPoint.vpoint.push_back(0);
+        newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0])/2;
+  
+        newPoint.vpoint.push_back(0);
+        newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1])/2;
+        newPoint.itemID = "0";
+  
+        Mean.cpoints.push_back(newPoint);
+    }
+    Mean.curveID = "0";
+    return Mean;
+}

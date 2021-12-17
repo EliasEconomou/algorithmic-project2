@@ -163,6 +163,59 @@ void calculate_centroids(Cluster_of_points &cluster){
 }
 
 //---------------------------------------------------------------------------//
+//           CENTROID FUNCTION USED BY LLOYD'S ALGORYTHM ON CURVES           //
+//---------------------------------------------------------------------------//
+
+void calculate_centroids(Cluster_of_curves &cluster){
+    cout << "CALCULATING CENTROIDS" << endl;
+    ClassCurve new_centroid;
+    vector<ClassCurve> new_centroids;
+    vector<double> sum_of_dimention;
+    int centroid_count = cluster.centroids.size();
+    
+    // ---Set new centroids for cluster---
+
+    //FOR EVERY CLUSTER OF POINTS
+    for (int i = 0 ; i < cluster.centroids.size() ; i++ ){
+        //CREATE A COMPLETE 'TREE' WITH THE CLUSTER'S CURVES
+        // int h = floor( log2( cluster.curves[i].curves.size() ) );
+        int h=1;
+        while (h > 0){
+            vector<ClassCurve> NewLevel;
+            
+            ClassCurve newCurve = Mean2Curves(cluster.curves[i].curves[1] , cluster.curves[i].curves[2]);
+
+            cout << "New curve created (LLOYDS FRECHET) WITH ID=" << newCurve.curveID << "and size = "<< newCurve.cpoints.size() << endl;
+            for (int i = 0; i < newCurve.cpoints.size() ; i++)
+            {
+                cout << "(" << newCurve.cpoints[i].vpoint[0] << "," << newCurve.cpoints[i].vpoint[1] << ") ";
+            }
+            cout << endl;
+
+            ClassCurve newCurve2 = Mean2Curves(cluster.curves[i].curves[1] , cluster.curves[i].curves[2]);
+            cout << "New curve created (LLOYDS FRECHET) WITH ID=" << newCurve2.curveID << "and size = "<< newCurve2.cpoints.size() << endl;
+            for (int i = 0; i < newCurve2.cpoints.size() ; i++)
+            {
+                cout << "(" << newCurve2.cpoints[i].vpoint[0] << "," << newCurve2.cpoints[i].vpoint[1] << ") ";
+            }
+            cout << endl;
+
+            h--;
+        }
+        
+        
+
+
+
+
+
+    }
+    cluster.centroids.swap(new_centroids);
+
+   
+}
+
+//---------------------------------------------------------------------------//
 //           K++ INITIALIZING FUNCTION ON CLUSTER OF POINTS                  //
 //---------------------------------------------------------------------------//
 
@@ -297,15 +350,15 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
         bool wascentroid;
         vector<double> distances;
         for (int i=0 ; i < Data.curves.size() ; i++){
-            ClassCurve* CurrentPoint = &(Data.curves[i]);
+            ClassCurve* CurrentCurve = &(Data.curves[i]);
             wascentroid=false;
             for (int j=0 ; j < Kplusplus.Centroids.size() ; j++){
-                if (Kplusplus.Centroids[j].curveID == CurrentPoint->curveID){ //if current is centroid dont
+                if (Kplusplus.Centroids[j].curveID == CurrentCurve->curveID){ //if current is centroid dont
                     distances.push_back(0);
                     wascentroid=true;
                 }
                 else{
-                    // distances.push_back( distance( Kplusplus.Centroids[j].cpoints , CurrentPoint->cpoints , 2) );
+                    distances.push_back( discrete_frechet_distance( Kplusplus.Centroids[j] , *CurrentCurve ) );
                 }
             }
             if(wascentroid){
@@ -317,7 +370,6 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
             Kplusplus.Dist_From_Centroids.push_back(distances);
             distances.clear();
         }
-
         // ---Calculating minimum distances---
         for (int i=0 ; i < Data.curves.size() ; i++){
             double min_dist = MAXFLOAT;
@@ -329,6 +381,7 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
             // ---Saving minimum distances---
             Kplusplus.Minimum_Distances.push_back(min_dist);
         }
+ 
 
         // ---Calculating max D(i) to normalize---
         float max_di = 0;
@@ -337,6 +390,7 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
                 max_di = Kplusplus.Minimum_Distances[i];
             }
         }
+        // cout << " AFTER CALCULATING MAX DI \n";
         // ---Normalising and calculating cumulative sum of squares---
         for (int i=0 ; i < Data.curves.size() ; i++){
             //Normalising
@@ -387,6 +441,7 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
     for (int i=0 ; i < Kplusplus.Centroids.size() ; i++){
         cluster.centroids.push_back( Kplusplus.Centroids[i] );
     }
+    // cout << "kplusplus finished " << endl;
     return cluster;
 }
 
@@ -465,6 +520,81 @@ Cluster_of_points lloyds(Vector_of_points &Data, Cluster_of_points &cluster, int
 }
 
 //---------------------------------------------------------------------------//
+//                 LLOYDS FUNCTION ON CLUSTER OF CURVES                      //
+//---------------------------------------------------------------------------//
+
+Cluster_of_curves lloyds(Vector_of_curves &Data, Cluster_of_curves &cluster, int iter_num_input){
+
+    int iter_num = iter_num_input;
+
+    // ---Manually preallocating the vectors to load iteams without problems---
+    Vector_of_curves current_cluster;
+    for (int i=0 ; i < cluster.centroids.size() ; i++){
+        cluster.curves.push_back(current_cluster);
+    }
+
+
+    // ---FOR ITER_NUM ITERATION OF THE ALGORYTHM---
+    while (iter_num > 0){
+        // ---ASSIGN EACH POINT TO A CENTROID---
+        int min_centroid_iterator;
+        double min_centroid_distance=MAXFLOAT;
+        double dist;
+        bool is_centroid;
+
+        // ---ITERATING THROUGH POINTS---
+        for (int i=0 ; i < Data.curves.size() ; i++){
+
+            //---Checking if point is centroid, if so ignoring it---
+            is_centroid = false;
+            for (int j=0 ; j < cluster.centroids.size() ; j++){
+                if (cluster.centroids[j].curveID == Data.curves[i].curveID){
+                    is_centroid = true;
+                    break;
+                }
+
+            }
+            if (is_centroid)continue;
+
+            // ---Creating clusters of points by assigning them to closest centroid---
+            for (int j=0 ; j < cluster.centroids.size() ; j++){
+                //Calculating distance between current point and current centroid
+                dist = discrete_frechet_distance( Data.curves[i], cluster.centroids[j] );
+
+                if (j==0){
+                    min_centroid_iterator = 0;
+                    min_centroid_distance = dist;
+                }
+                else{
+                    if (dist < min_centroid_distance){
+                        min_centroid_distance = dist;
+                        min_centroid_iterator = j;
+                    }
+                }
+            }
+            cluster.curves[min_centroid_iterator].curves.push_back(Data.curves[i]);
+
+        }
+
+        iter_num--;
+
+        // ---IF NOT OVER , CLEANING UP FOR NEXT ITERATION---
+        if (iter_num > 0){
+            // ---ASSIGNING NEW CENTROIDS-- 
+            calculate_centroids(cluster);
+
+            //CLEANUP POINTS TO BE ABLE TO BE REASSIGNED
+            for(int j=0 ; j < cluster.centroids.size() ; j++){
+                cluster.curves[j].curves.clear();
+            }
+        }
+    }
+
+    return cluster;
+}
+
+
+//---------------------------------------------------------------------------//
 //    CLUSTER 'CLASSIC' FUNCTION USING LLOYDS ON CLUSTER OF POINTS           //
 //---------------------------------------------------------------------------//
 
@@ -489,7 +619,7 @@ Cluster_of_points cluster_Classic(Vector_of_points &Data, Cluster_of_points &clu
 }
 
 //---------------------------------------------------------------------------//
-//    CLUSTER 'CLASSIC' FUNCTION USING LLOYDS ON CLUSTER OF POINTS           //
+//    CLUSTER 'CLASSIC' FUNCTION USING LLOYDS ON CLUSTER OF CURVES           //
 //---------------------------------------------------------------------------//
 
 Cluster_of_curves cluster_Classic(Vector_of_curves &Data, Cluster_of_curves &cluster, int number_of_clusters){
@@ -507,7 +637,7 @@ Cluster_of_curves cluster_Classic(Vector_of_curves &Data, Cluster_of_curves &clu
     }
 
     // ---LLOYDS ALGORYTHM---
-    // cluster = lloyds(Data, cluster, iter_lloyd);
+    cluster = lloyds(Data, cluster, iter_lloyd);
 
     return cluster;
 }
