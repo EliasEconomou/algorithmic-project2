@@ -55,6 +55,13 @@ class Cluster_of_points //class to implement clusters easier
     std::vector<Vector_of_points> points; //vector of points in each cluster
 };
 
+class Cluster_of_curves //class to implement clusters easier
+{
+    public:
+    std::vector<ClassCurve> centroids; //vector of centroid points
+    std::vector<Vector_of_curves> curves; //vector of points in each cluster
+};
+
 
 class kplusplus_helper //helping class
 {
@@ -63,6 +70,16 @@ class kplusplus_helper //helping class
     std::vector<std::vector<double>> Dist_From_Centroids;
     std::vector<double> Minimum_Distances;
     std::vector<ClassPoint> Centroids;
+    std::vector<bool> IsCentroid;
+};
+
+class kplusplus_helper_curves //helping class
+{
+    public:
+    std::vector<double> Additive_Square_Sums;
+    std::vector<std::vector<double>> Dist_From_Centroids;
+    std::vector<double> Minimum_Distances;
+    std::vector<ClassCurve> Centroids;
     std::vector<bool> IsCentroid;
 };
 
