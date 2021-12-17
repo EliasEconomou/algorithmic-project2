@@ -167,8 +167,7 @@ void calculate_centroids(Cluster_of_points &cluster){
 //---------------------------------------------------------------------------//
 
 void calculate_centroids(Cluster_of_curves &cluster){
-    cout << "CALCULATING CENTROIDS" << endl;
-    ClassCurve new_centroid;
+    // std::cout << "CALCULATING CENTROIDS" << endl;
     vector<ClassCurve> new_centroids;
     vector<double> sum_of_dimention;
     int centroid_count = cluster.centroids.size();
@@ -177,39 +176,61 @@ void calculate_centroids(Cluster_of_curves &cluster){
 
     //FOR EVERY CLUSTER OF POINTS
     for (int i = 0 ; i < cluster.centroids.size() ; i++ ){
-        //CREATE A COMPLETE 'TREE' WITH THE CLUSTER'S CURVES
-        // int h = floor( log2( cluster.curves[i].curves.size() ) );
-        int h=1;
-        while (h > 0){
-            vector<ClassCurve> NewLevel;
-            
-            ClassCurve newCurve = Mean2Curves(cluster.curves[i].curves[1] , cluster.curves[i].curves[2]);
-
-            cout << "New curve created (LLOYDS FRECHET) WITH ID=" << newCurve.curveID << "and size = "<< newCurve.cpoints.size() << endl;
-            for (int i = 0; i < newCurve.cpoints.size() ; i++)
+        if(cluster.curves[i].curves.size() == 0){
+            ClassCurve newCurve;
+            for (int m = 0; m < cluster.centroids[i].cpoints.size() ; m++)
             {
-                cout << "(" << newCurve.cpoints[i].vpoint[0] << "," << newCurve.cpoints[i].vpoint[1] << ") ";
+                newCurve.cpoints.push_back( cluster.centroids[i].cpoints[m] );
             }
-            cout << endl;
-
-            ClassCurve newCurve2 = Mean2Curves(cluster.curves[i].curves[1] , cluster.curves[i].curves[2]);
-            cout << "New curve created (LLOYDS FRECHET) WITH ID=" << newCurve2.curveID << "and size = "<< newCurve2.cpoints.size() << endl;
-            for (int i = 0; i < newCurve2.cpoints.size() ; i++)
-            {
-                cout << "(" << newCurve2.cpoints[i].vpoint[0] << "," << newCurve2.cpoints[i].vpoint[1] << ") ";
-            }
-            cout << endl;
-
-            h--;
+            newCurve.curveID = cluster.centroids[i].curveID;
+            new_centroids.push_back(newCurve);
+            continue;
         }
-        
-        
+        //CREATE A COMPLETE 'TREE' WITH THE CLUSTER'S CURVES
+        vector<ClassCurve> nodeLevel;
+        vector<ClassCurve> TEMPnodeLevel;
+        nodeLevel.clear();
+        TEMPnodeLevel.clear();
+        for (int j = 0; j < cluster.curves[i].curves.size() ; j++)
+        {
+            TEMPnodeLevel.push_back(cluster.curves[i].curves[j]);
+        }
+        while (TEMPnodeLevel.size() > 1){
+            // cout << "IN H LOOP" << endl;
+            ClassCurve newCurve;
+            for (int j = 0; j < TEMPnodeLevel.size() ; j++)
+            {
+                if (j+1 >= TEMPnodeLevel.size()){
+                    for (int m = 0; m < TEMPnodeLevel[j].cpoints.size() ; m++)
+                    {
+                        newCurve.cpoints.push_back( TEMPnodeLevel[j].cpoints[m] );
+                    }
+                    
+                    newCurve = TEMPnodeLevel[j];
+                    nodeLevel.push_back(newCurve);
+                    break;
+                }
+                newCurve = Mean2Curves(TEMPnodeLevel[j] , TEMPnodeLevel[j+1]);
+                nodeLevel.push_back(newCurve);
+                j++;
+            }
+            // cout << "NODE CREATED WITH SIZE " << nodeLevel.size() << endl;
+            nodeLevel.swap(TEMPnodeLevel);
+            nodeLevel.clear();
 
+            // h--;
 
-
-
-
+            // cout << "New curve created (LLOYDS FRECHET) WITH ID=" << newCurve.curveID << "and size = "<< newCurve.cpoints.size() << endl;
+            // for (int i = 0; i < newCurve.cpoints.size() ; i++)
+            // {
+            //     cout << "(" << newCurve.cpoints[i].vpoint[0] << "," << newCurve.cpoints[i].vpoint[1] << ") ";
+            // }
+            // cout << endl;
+        }
+        // std::cout << "TEMPNODE FINAL WITH SIZE " << TEMPnodeLevel.size() << endl;
+        new_centroids.push_back(TEMPnodeLevel[0]);
     }
+    // std::cout << "NEW CENTROIDS SIZE " << new_centroids.size() << endl;
     cluster.centroids.swap(new_centroids);
 
    

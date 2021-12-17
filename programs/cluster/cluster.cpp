@@ -274,8 +274,19 @@ int main(int argc, char** argv) {
                 for (int j = 0; j < Cluster.centroids[i].cpoints.size(); j++)
                 {
                     
-                    // if (j==0)out_file << Cluster.centroids[i].cpoints[j];
-                    // else out_file << ", " << Cluster.centroids[i].cpoints[j];
+                    if (j==0){
+                        for (int k = 0; k < Cluster.centroids[i].cpoints[j].vpoint.size() ; k++)
+                        {
+                            out_file << Cluster.centroids[i].cpoints[j].vpoint[k];
+                        }
+                    }
+                    else{
+                        out_file << " , ";
+                        for (int k = 0; k < Cluster.centroids[i].cpoints[j].vpoint.size() ; k++)
+                        {
+                            out_file << Cluster.centroids[i].cpoints[j].vpoint[k] << ",";
+                        }
+                    }
                 }
                 out_file << "] }" << endl;
             }

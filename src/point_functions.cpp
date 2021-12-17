@@ -309,7 +309,7 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 
 
 list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
-    cout << "FINDING OPTIMAL TRAVERSAL" << endl;
+    // cout << "FINDING OPTIMAL TRAVERSAL" << endl;
     int c1size = c1.cpoints.size();
     int c2size = c2.cpoints.size();
     double L[c1size][c2size];
@@ -366,7 +366,7 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
 }
 
 ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
-    cout << "CALCULATING MEAN2CURVES" << endl;
+    // cout << "CALCULATING MEAN2CURVES" << endl;
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
     for (int i = 0; i < OptimalTraversal.size() ; i++)
@@ -378,10 +378,10 @@ ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
 
         ClassPoint newPoint;
         newPoint.vpoint.push_back(0);
-        newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0])/2;
+        newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
   
         newPoint.vpoint.push_back(0);
-        newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1])/2;
+        newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
         newPoint.itemID = "0";
   
         Mean.cpoints.push_back(newPoint);
