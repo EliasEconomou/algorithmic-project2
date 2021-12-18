@@ -287,11 +287,11 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
             }
             else if (i==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[1][j-1]);
+                L[i][j] = max(distance(c1point,c2point,2),L[0][j-1]);
             }
             else if (j==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[i-1][1]);
+                L[i][j] = max(distance(c1point,c2point,2),L[i-1][0]);
             }
             else
             {
@@ -326,11 +326,11 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
             }
             else if (i==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[1][j-1]);
+                L[i][j] = max(distance(c1point,c2point,2),L[0][j-1]);
             }
             else if (j==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[i-1][1]);
+                L[i][j] = max(distance(c1point,c2point,2),L[i-1][0]);
             }
             else
             {
@@ -372,6 +372,14 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
         }
     }
 
+    cout << "OPTIMAL TRAVERSAL | SIZE = " << OptimalTraversal.size() << endl;
+    for (std::list<pair<int,int>>::iterator it=OptimalTraversal.begin() ; it != OptimalTraversal.end(); ++it)
+    {
+        cout << "(" << it->first << "," << it->second << ")";
+    }
+    cout << endl ;cout << endl ;cout << endl ;
+    
+
     return OptimalTraversal;
 }
 
@@ -379,23 +387,37 @@ ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
     // cout << "CALCULATING MEAN2CURVES" << endl;
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
-    for (int i = 0; i < OptimalTraversal.size() ; i++)
+    int traversalSize = OptimalTraversal.size();
+    cout << OptimalTraversal.size() << endl;
+
+    // list<pair<int,int>>::iterator it;
+    for (int i = 0; i < traversalSize ; i++)
     {
+        cout << "'" << OptimalTraversal.size() << "' ";
         pair<int,int> Current_pair;
         Current_pair = OptimalTraversal.front();
+        cout << "(" << Current_pair.first << "," << Current_pair.second << ")";
  
         OptimalTraversal.pop_front();
 
         ClassPoint newPoint;
-        newPoint.vpoint.push_back(0);
-        newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
+        // newPoint.vpoint.push_back(0);
+        double value = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
+        newPoint.vpoint.push_back(value);
+        // newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
   
-        newPoint.vpoint.push_back(0);
-        newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
+        value = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
+        // newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
+        newPoint.vpoint.push_back(value);
         newPoint.itemID = "0";
+
+        cout << "NEW POINT CREATED";
+        cout << "(" << newPoint.vpoint[0] << "," <<  newPoint.vpoint[1] << ") ";
   
         Mean.cpoints.push_back(newPoint);
+        cout << Mean.cpoints.size();
     }
+    cout << "LOOP ENDED" << endl;
     Mean.curveID = "0";
     return Mean;
 }
