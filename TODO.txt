@@ -1,1 +1,27 @@
 - eksetazw na mpei ena t kai gia tis 2 diastaseis sto gridtable tou discrete frechet
+
+// ClassCurve c1 = Data.curves[0];
+    // cout << "PRINTING CURVE 1 with size1 = " << c1.cpoints.size() << endl;
+    // for (int i = 0; i < c1.cpoints.size(); i++)
+    // {
+    //     cout << "(" << c1.cpoints[i].vpoint[0] << "-" << c1.cpoints[i].vpoint[1] << ") ";
+    // }
+    // cout << endl << endl << endl << endl << endl;
+    // ClassCurve c2 = Data.curves[1];
+    // cout << "PRINTING CURVE 2 with size2 = " << Data.curves[1].cpoints.size() << endl;
+    // for (int i = 0; i < c2.cpoints.size(); i++)
+    // {
+    //     cout << "(" << c2.cpoints[i].vpoint[0] << "-" << c2.cpoints[i].vpoint[1] << ") ";
+    // }
+
+    // cout << endl << endl << endl << endl << endl;
+
+    // cout << "PRINTING CURVE MID" << endl;
+    // ClassCurve cmid = Mean2Curves(c1,c2);
+    // cout << "PRINTING CURVE 2" << endl;
+    // for (int i = 0; i < cmid.cpoints.size(); i++)
+    // {
+    //     cout << "(" << cmid.cpoints[i].vpoint[0] << "-" << cmid.cpoints[i].vpoint[1] << ") ";
+    // }
+    // cout << cmid.cpoints.size();
+    // cout << endl << endl;

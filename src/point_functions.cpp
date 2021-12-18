@@ -343,9 +343,9 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
 
     std::list<std::pair<int,int>> OptimalTraversal;
     int Pi,Qi;
-    Pi = c1size;
-    Qi = c2size;
-    OptimalTraversal.push_back( make_pair(Pi,Qi) );
+    Pi = c1size-1;
+    Qi = c2size-1;
+    OptimalTraversal.push_front( make_pair(Pi,Qi) );
 
     while (Pi != 0 && Qi != 0){
         int min_value_index;
@@ -372,14 +372,6 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
         }
     }
 
-    cout << "OPTIMAL TRAVERSAL | SIZE = " << OptimalTraversal.size() << endl;
-    for (std::list<pair<int,int>>::iterator it=OptimalTraversal.begin() ; it != OptimalTraversal.end(); ++it)
-    {
-        cout << "(" << it->first << "," << it->second << ")";
-    }
-    cout << endl ;cout << endl ;cout << endl ;
-    
-
     return OptimalTraversal;
 }
 
@@ -387,37 +379,31 @@ ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
     // cout << "CALCULATING MEAN2CURVES" << endl;
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
-    int traversalSize = OptimalTraversal.size();
-    cout << OptimalTraversal.size() << endl;
+    //int traversalSize = OptimalTraversal.size();
+    cout << "opt-size : " << OptimalTraversal.size() << endl;
 
     // list<pair<int,int>>::iterator it;
-    for (int i = 0; i < traversalSize ; i++)
+    while (OptimalTraversal.size() > 0)
     {
-        cout << "'" << OptimalTraversal.size() << "' ";
         pair<int,int> Current_pair;
         Current_pair = OptimalTraversal.front();
-        cout << "(" << Current_pair.first << "," << Current_pair.second << ")";
  
         OptimalTraversal.pop_front();
 
         ClassPoint newPoint;
-        // newPoint.vpoint.push_back(0);
+
         double value = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
         newPoint.vpoint.push_back(value);
-        // newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
+        newPoint.vpoint[0] = (c1.cpoints[Current_pair.first].vpoint[0] + c2.cpoints[Current_pair.second].vpoint[0]) / 2;
   
         value = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
-        // newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
+        newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
         newPoint.vpoint.push_back(value);
+
         newPoint.itemID = "0";
 
-        cout << "NEW POINT CREATED";
-        cout << "(" << newPoint.vpoint[0] << "," <<  newPoint.vpoint[1] << ") ";
-  
         Mean.cpoints.push_back(newPoint);
-        cout << Mean.cpoints.size();
     }
-    cout << "LOOP ENDED" << endl;
     Mean.curveID = "0";
     return Mean;
 }
