@@ -17,16 +17,12 @@ GridTable::GridTable(int bucketsNumber, double delta, int curveDim, int pointDim
   if (pointDim == 1)
   {
     this->epsilon = EPSILON;
-    this->tShiftGrid.first = -1.0;
-    this->tShiftGrid.second = -1.0;
   }
   else if (pointDim == 2)
   {
-    double randt = random_double(0,delta);
-    this->tShiftGrid.first = randt;
-    this->tShiftGrid.second = randt;
     this->epsilon = -1.0;
   }
+  this->tShiftGrid = random_double(0,delta);
   this->pointDim = pointDim;
   this->bucketsNumber = bucketsNumber;
   this->delta = delta;
@@ -41,17 +37,17 @@ void GridTable::GridInsert(ClassCurve *c, LSH_hash_info *hInfo)
   // to find the right bucket.
   vector<double> LSHvector;
 
-  if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
+  if (this->pointDim == 1)
   {
     filtering(c, this->epsilon);
-    ClassCurve gridCurve = snapToGrid(*c,this->delta);
+    ClassCurve gridCurve = snapTo1dGrid(*c, this->tShiftGrid, this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector1D(gridCurve);
   }
   else if (this->pointDim == 2)
   {
-    ClassCurve gridCurve = snapToGrid(*c, this->tShiftGrid, this->delta);
+    ClassCurve gridCurve = snapTo2dGrid(*c, this->tShiftGrid, this->delta);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector2D(gridCurve);
   }

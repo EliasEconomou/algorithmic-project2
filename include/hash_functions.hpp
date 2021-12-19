@@ -105,7 +105,7 @@ std::vector<int> compute_r(int k);
 
 
 // Snaps a curve to a grid of two dimensions removing consecutive duplicates.
-ClassCurve snapToGrid(ClassCurve curve, std::pair<double,double> tShiftGrid, double delta);
+ClassCurve snapTo2dGrid(ClassCurve curve, double tShiftGrid, double delta);
 
 // Pads the snapped curve with a big number so that all curves are equally sized.
 void padding(ClassCurve *curve, int dimension);
@@ -117,7 +117,7 @@ std::vector<double> keyLSHvector2D(ClassCurve curve);
 void filtering(ClassCurve *curve, double epsilon);
 
 // Snaps a curve to a grid of one dimension removing consecutive duplicates.
-ClassCurve snapToGrid(ClassCurve curve, double delta);
+ClassCurve snapTo1dGrid(ClassCurve curve, double tShiftGrid, double delta);
 
 // Keep sequence of minima and maxima by removing from v1,...,vm any vi s.t. vi ∈ [min{vi−1, vi+1}, max{vi−1, vi+1}]
 void minima_maxima(ClassCurve *curve);

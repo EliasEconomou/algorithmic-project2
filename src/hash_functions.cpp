@@ -342,14 +342,13 @@ int compute_gValue(vector<int> fValues, CUBE_hash_info *hInfo) //cube
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-ClassCurve snapToGrid(ClassCurve curve, pair<double,double> tShiftGrid, double delta)
+ClassCurve snapTo2dGrid(ClassCurve curve, double tShiftGrid, double delta)
 {
-    //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
     ClassCurve grid_curve;
     for (int i = 0; i < curve.cpoints.size(); i++)
     {
-        double ay = floor((curve.cpoints[i].vpoint[0] - tShiftGrid.first)/delta + 0.5)*delta + tShiftGrid.first;
-        double ax = floor((curve.cpoints[i].vpoint[1] - tShiftGrid.second)/delta + 0.5)*delta + tShiftGrid.second;
+        double ay = floor((curve.cpoints[i].vpoint[0] - tShiftGrid)/delta + 0.5)*delta + tShiftGrid;
+        double ax = floor((curve.cpoints[i].vpoint[1] - tShiftGrid)/delta + 0.5)*delta + tShiftGrid;
         ClassPoint p;
         int point_id = 0;
         p.itemID = to_string(point_id);
@@ -429,13 +428,13 @@ void filtering(ClassCurve *curve, double epsilon)
     }
 }
 
-ClassCurve snapToGrid(ClassCurve curve, double delta)
+ClassCurve snapTo1dGrid(ClassCurve curve, double tShiftGrid, double delta)
 {
     //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;
     ClassCurve grid_curve;
     for (int i = 0; i < curve.cpoints.size(); i++)
     {
-        double gridValue = floor(curve.cpoints[i].vpoint[0]/delta)*delta;
+        double gridValue = floor((curve.cpoints[i].vpoint[0]+tShiftGrid)/delta)*delta;
         ClassPoint p;
         int point_id = 0;
         p.itemID = to_string(point_id);

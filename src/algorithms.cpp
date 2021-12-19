@@ -573,7 +573,7 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
         for (int i = 0; i < L; i++) 
         {
             filtering(&q, gridTables[i].epsilon);
-            ClassCurve gridCurve = snapToGrid(q,gridTables[i].delta);
+            ClassCurve gridCurve = snapTo1dGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
             minima_maxima(&gridCurve);
             padding(&gridCurve, gridTables[i].curveDim);
             vector<double> LSHvector = keyLSHvector1D(gridCurve);
@@ -637,7 +637,7 @@ pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, vector<GridTable> gridT
     {
         for (int i = 0; i < L; i++) 
         {
-            ClassCurve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+            ClassCurve grid_curve = snapTo2dGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
             padding(&grid_curve, gridTables[i].curveDim);
             vector<double> LSHvector = keyLSHvector2D(grid_curve);
             // Update hinfo with the right vectors for every hash table, to compute query's g-value
@@ -762,7 +762,7 @@ unordered_map<string,double> lsh_approximate_range_search(ClassCurve q, double R
     int L = hInfo->get_L();
     for (int i = 0; i < L; i++) {
 
-        ClassCurve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+        ClassCurve grid_curve = snapTo2dGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
         padding(&grid_curve, gridTables[i].curveDim);
         vector<double> LSHvector = keyLSHvector2D(grid_curve);
 

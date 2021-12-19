@@ -27,7 +27,7 @@ class GridTable
 public:
     int pointDim; //dimension of grid / points of curves
     int curveDim; //dimension of curves (number of points)
-    std::pair<double,double> tShiftGrid; //shift grid's y/x by this number (2D grid)
+    double tShiftGrid; //shift grid's y/x by this number
     double epsilon; //for filtering (1D grid)
     double delta;
     std::vector<double> t;
