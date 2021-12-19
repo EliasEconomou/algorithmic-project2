@@ -1,5 +1,7 @@
 #include "../include/cluster_methods.hpp"
+
 #define MAX_HD 6
+#define EPSILON 0.1
 
 using namespace std;
 
@@ -207,16 +209,14 @@ void calculate_centroids(Cluster_of_curves &cluster){
                     }
                     else
                     {
-                        if (leaves[k].cpoints.size() != leaves[k+1].cpoints.size())
-                        {
-                            double flompa = discrete_frechet_distance(leaves[k],leaves[k+1]);
-                        } 
                         leaves[k/2]=Mean2Curves(leaves[k],leaves[k+1]);
+                        filtering(&leaves[k/2], EPSILON);
                     }
                 }
                 else if (leaves.size()%2==0) // even number of curves
                 {
                     leaves[k/2]=Mean2Curves(leaves[k],leaves[k+1]);
+                    filtering(&leaves[k/2], EPSILON);
                 }
             }
             double newLeavesSize = double(leaves.size())/2;
