@@ -43,36 +43,24 @@ void GridTable::GridInsert(ClassCurve *c, LSH_hash_info *hInfo)
 
   if (this->pointDim == 1) //todo delete this->curveDim opou de xreiazetai
   {
-    //cout << c->curveID << " has " << c->cpoints.size() << endl;
     filtering(c, this->epsilon);
-    //cout << c->curveID << " has " << c->cpoints.size() << endl;
     ClassCurve gridCurve = snapToGrid(*c,this->delta);
     minima_maxima(&gridCurve);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector1D(gridCurve);
-    // for (int i = 0; i < this->curveDim; i++)
-    // {
-    //   cout << LSHvector[i] << " - "; 
-    // }
-    // cout << endl << LSHvector.size() << endl;
   }
   else if (this->pointDim == 2)
   {
     ClassCurve gridCurve = snapToGrid(*c, this->tShiftGrid, this->delta);
     padding(&gridCurve, this->curveDim);
     LSHvector = keyLSHvector2D(gridCurve);
-    // for (int i = 0; i < 2*this->curveDim; i++)
-    // {
-    //   cout << LSHvector[i] << " - "; 
-    // }
-    // cout << endl << LSHvector.size() << endl;
   }
   
   vector<int> hValues;
   hInfo->update_v(this->v);
   hInfo->update_t(this->t);
   hInfo->update_r(this->r);
-  int k = hInfo->get_k();  
+  int k = hInfo->get_k();
 
   for (int i = 0; i < k; i++)
   {

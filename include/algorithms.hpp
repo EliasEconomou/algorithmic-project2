@@ -60,4 +60,6 @@ std::pair<ClassCurve,double> lsh_approximate_NN(ClassCurve q, std::vector<GridTa
 
 std::pair<ClassCurve,double> true_NN(ClassCurve q, Vector_of_curves inputData, double &time);
 
+std::unordered_map<std::string,double> lsh_approximate_range_search(ClassCurve q, double R, std::vector<GridTable> gridTables, LSH_hash_info *hInfo);
+
 #endif

@@ -226,75 +226,10 @@ void calculate_centroids(Cluster_of_curves &cluster){
         }
         new_centroids.push_back(leaves[0]);
     }
-        //todo delete ta apo katw
-        //-----------------------------kwstas apo katw-------------------------------------------------------------------------------------------
-    //     if(cluster.curves[i].curves.size() == 0){
-    //         cout << endl << "cluster size == 0 - do stuff" << endl << endl;
-    //         ClassCurve newCurve;
-    //         for (int m = 0; m < cluster.centroids[i].cpoints.size() ; m++)
-    //         {
-    //             newCurve.cpoints.push_back( cluster.centroids[i].cpoints[m] );
-    //         }
-    //         newCurve.curveID = cluster.centroids[i].curveID;
-    //         new_centroids.push_back(newCurve);
-    //         continue;
-    //     }
-    //     //CREATE A COMPLETE 'TREE' WITH THE CLUSTER'S CURVES
-    //     cout << "CREATING A COMPLETE 'TREE' WITH THE CLUSTER'S CURVES" << endl;
-    //     vector<ClassCurve> nodeLevel;
-    //     vector<ClassCurve> TEMPnodeLevel;
-    //     nodeLevel.clear();
-    //     TEMPnodeLevel.clear();
-    //     for (int j = 0; j < cluster.curves[i].curves.size() ; j++)
-    //     {
-    //         TEMPnodeLevel.push_back(cluster.curves[i].curves[j]);
-    //     }
-
-
-    //     //-------------------------------------------------------------------------------------
-    //     //  TEMPnodelevel is the vector of curves that starts filled with current cluster's   |
-    //     //  curves and each iteration gets updated with the new means that are created -just  |
-    //     //  like in a complete binary tree.                                                   |
-    //     //-------------------------------------------------------------------------------------
-    //     while (TEMPnodeLevel.size() > 1){
-    //         ClassCurve newCurve;
-    //         for (int j = 0; j < TEMPnodeLevel.size() ; j+=2)
-    //         {
-    //             if ( j+1 >= TEMPnodeLevel.size()){
-    //                 for (int m = 0; m < TEMPnodeLevel[j].cpoints.size() ; m++)
-    //                 {
-    //                     newCurve.cpoints.push_back( TEMPnodeLevel[j].cpoints[m] );
-    //                 }
-                    
-    //                 newCurve = TEMPnodeLevel[j];
-    //                 nodeLevel.push_back(newCurve);
-    //                 break;
-    //             }
-    //             newCurve = Mean2Curves(TEMPnodeLevel[j] , TEMPnodeLevel[j+1]);
-    //             nodeLevel.push_back(newCurve);
-    //         }
-    //         cout << "NODE CREATED WITH SIZE " << nodeLevel.size() << endl;
-    //         cout << "before swap" << endl;
-    //         nodeLevel.swap(TEMPnodeLevel);
-    //         cout << "after swap" << endl;
-    //         nodeLevel.clear();
-    //         cout << "after clear" << endl;
-    //     }
-    //     std::cout << "NEW FINAL MEAN WITH SIZE " << TEMPnodeLevel.size() << endl;
-    //     for (int i = 0; i < TEMPnodeLevel[0].cpoints.size() ; i++)
-    //     {
-    //         cout << "(" <<TEMPnodeLevel[0].cpoints[i].vpoint[0] << "," << TEMPnodeLevel[0].cpoints[i].vpoint[1] << ")";
-    //     }
-    //     cout << endl;
-    //     cout << "before pushback" << endl;
-    //     new_centroids.push_back(TEMPnodeLevel[0]);
-    //     cout << "after pushback" << endl;
-    // }
 
     std::cout << "NEW CENTROIDS SIZE " << new_centroids.size() << endl;
     cluster.centroids.swap(new_centroids);
 
-   
 }
 
 //---------------------------------------------------------------------------//
@@ -910,7 +845,7 @@ Cluster_of_curves cluster_LSH_Frechet(Vector_of_curves &Data, Cluster_of_curves 
     
     for (int i = 0; i < L_of_LSH; i++)
     {
-        gridTables[i].v = compute_v(k_of_LSH,dimension);
+        gridTables[i].v = compute_v(k_of_LSH,2*dimension);
         gridTables[i].t = compute_t(k_of_LSH);
         gridTables[i].r = compute_r(k_of_LSH);
         for (int j = 0; j < curvesNumber; j++)
@@ -959,10 +894,8 @@ Cluster_of_curves cluster_LSH_Frechet(Vector_of_curves &Data, Cluster_of_curves 
             bool tookaction=false;
             //FOR EVERY CENTROID
             for (int i=0 ; i < cluster.centroids.size() ; i++){
-
-                //------------------------------TODO-----------------------------------------------------
-                // CurvesInR = lsh_approximate_range_search(cluster.centroids[i], R, gridTables, &hInfo);
-                
+                CurvesInR = lsh_approximate_range_search(cluster.centroids[i], R, gridTables, &hInfo);
+ 
                 //FOR ALL POINTS FOUND BY RANGE SEARCH
                 for (it2 = CurvesInR.begin(); it2 != CurvesInR.end(); it2++){
                     int point_cluster_num = Data_Found_map.find(it2->first)->second;

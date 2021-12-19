@@ -754,41 +754,46 @@ pair<ClassCurve,double> true_NN(ClassCurve q, Vector_of_curves inputData, double
 }
 
 
-// unordered_map<string,double> lsh_approximate_range_search(ClassCurve q, double R, vector<GridTable> gridTables, LSH_hash_info *hInfo)
-// {
-//     // Initialise an unordered map two hold points-distances inside radius r.
-//     unordered_map<string,double> rPoints;
-//     int L = hInfo->get_L();
-//     for (int i = 0; i < L; i++) {
-//         // Update hinfo with the right vectors for every hash table, to compute query's g-value
-//         hInfo->update_v(gridTables[i].v);
-//         hInfo->update_t(gridTables[i].t);
-//         hInfo->update_r(gridTables[i].r);
-//         // Find g value for query point.
-//         vector<int> hValues;
-//         int k = hInfo->get_k();
-//         vector<double> vp = q.cpoints[];
-//         for (int j = 0; j < k; j++)
-//         {
-//             hValues.push_back(compute_hValue(j, vp, hInfo));
-            
-//         }
-//         long int ID = compute_IDvalue(hValues, hInfo);
-//         int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
-//         list<HashNode> listToSearch = gridTables[i].get_bucketList(g);
-//         typename list<HashNode>::iterator current;
-//         for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
-//             if (ID != current->ID)
-//             {  
-//                 continue;
-//             }
+unordered_map<string,double> lsh_approximate_range_search(ClassCurve q, double R, vector<GridTable> gridTables, LSH_hash_info *hInfo)
+{
+    // Initialise an unordered map two hold points-distances inside radius r.
+    unordered_map<string,double> rCurves;
+    
+    int L = hInfo->get_L();
+    for (int i = 0; i < L; i++) {
 
-//             double dist = distance(q.cpoints,current->point->cpoints, 2);
-//             if (dist < R && dist != 0)
-//             {
-//                 rPoints.insert(make_pair(current->point->itemID,dist));
-//             }
-//         }
-//     }
-//     return rPoints;
-// }
+        ClassCurve grid_curve = snapToGrid(q,gridTables[i].tShiftGrid,gridTables[i].delta);
+        padding(&grid_curve, gridTables[i].curveDim);
+        vector<double> LSHvector = keyLSHvector2D(grid_curve);
+
+        // Update hinfo with the right vectors for every hash table, to compute query's g-value
+        hInfo->update_v(gridTables[i].v);
+        hInfo->update_t(gridTables[i].t);
+        hInfo->update_r(gridTables[i].r);
+        // Find g value for query point.
+        vector<int> hValues;
+        int k = hInfo->get_k();
+        for (int j = 0; j < k; j++)
+        {
+            hValues.push_back(compute_hValue(j, LSHvector, hInfo));
+            
+        }
+        long int ID = compute_IDvalue(hValues, hInfo);
+        int g = compute_gValue(ID, gridTables[i].get_bucketsNumber());
+        list<GridNode> listToSearch = gridTables[i].get_bucketList(g);
+        typename list<GridNode>::iterator current;
+        for (current = listToSearch.begin() ; current != listToSearch.end() ; ++current ) {
+            if (ID != current->ID)
+            {  
+                continue;
+            }
+
+            double dist = discrete_frechet_distance(q,*(current->curve));
+            if (dist < R && dist != 0)
+            {
+                rCurves.insert(make_pair(current->curve->curveID,dist));
+            }
+        }
+    }
+    return rCurves;
+}
