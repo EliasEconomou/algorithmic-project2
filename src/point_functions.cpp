@@ -393,10 +393,9 @@ list<pair<int,int>> FindOptimalTraversal(ClassCurve c1, ClassCurve c2){
 }
 
 ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
-    cout << "CALCULATING MEAN2CURVES" << endl;
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
-    cout << "opt-size : " << OptimalTraversal.size() << endl;
+    // cout << "opt-size : " << OptimalTraversal.size() << endl;
 
     // Pop from optimal traversal, compute mid point and add it to mid-curve.
     while (OptimalTraversal.size() > 0)

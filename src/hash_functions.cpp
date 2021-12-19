@@ -428,6 +428,7 @@ void filtering(ClassCurve *curve, double epsilon)
     }
 }
 
+
 ClassCurve snapTo1dGrid(ClassCurve curve, double tShiftGrid, double delta)
 {
     //cout << endl << endl << "CURVE ID : " << curve.curveID << endl << endl;

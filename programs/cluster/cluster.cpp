@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
 
         std::cout << "Operation Successfull. \n \n";
         std::cout << "Writing to output file... \n";
-
+      
         // ---PRINT RESULTS TO OUTPUT FILE---
         string method_name;
         if (method=="Classic")method_name="Lloyds";
@@ -371,12 +371,10 @@ int main(int argc, char** argv) {
             }
             out_file << ", " << sum_of_sps / Cluster.centroids.size() << "]";
             out_file << endl;
-            out_file.close();
+            if (!complete)out_file.close();
         }
-
-
         if(complete){
-            for (int i = 0; i < Cluster.centroids.size(); i++)
+            for (int i = 0; i < Cluster.centroids.size() ; i++)
             {
                 out_file << "CLUSTER-" << i+1 << " {";
                 out_file << Cluster.centroids[i].itemID;
@@ -385,8 +383,8 @@ int main(int argc, char** argv) {
                     out_file <<  ", " << Cluster.points[i].points[j].itemID;
                 }
                 out_file << "}" << endl;
-                out_file.close();
             }
+            out_file.close();
         }
     }
     return 0;
