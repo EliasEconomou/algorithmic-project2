@@ -174,7 +174,7 @@ Cluster_of_curves cluster_data_curves(Vector_of_curves &data , string method, st
             cluster = cluster_Classic(data, cluster, kmedians);
             break;
         case 2: 
-            cluster = cluster_LSH_Frechet(data, cluster, k_of_LSH, kmedians);
+            cluster = cluster_LSH_Frechet(data, cluster, kmedians, Lfactor, k_of_LSH);
             break;
     }
 
