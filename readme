@@ -7,9 +7,6 @@
 
     Α μέρος (nearest neighbor):
 
-    todo περιγραφω τα defines
-
-
     Σύντομη περιγραφή:
     - Το main πρόγραμμα search αφού διαβάσει τα arguments καλεί, ανάλογα με τον algorithm και τη method που δόθηκαν, την αντίστοιχη συνάρτηση
     από το search_methods.hpp. Κάθε συνάρτηση διαβάζει τα αρχεία, εισάγει τις καμπύλες στο κατάλληλο hash table και καλώντας τους απαραίτητους
@@ -35,6 +32,16 @@
     παρθεί από το github.com/derohde/Fred.git και χρησιμοποιούνται για τον υπολογισμό της continuous frechet απόστασης.
 
 
+    Defined παράμετροι:
+        Στο grid_table.cpp
+        - EPSILON - για το filtering
+        Στο hash_functions.cpp
+        - M_PAD - για το padding
+        * Το w (για το LSH for vectors) μπορεί να αλλαχτεί απ την compute_w
+        Στο search_methods.cpp
+        - MAX_HAMMING_DIST - max hamming distance για το hypercube
+
+
     Aλλαγές:
     - Έγινε μετονομασία της κλάσης Point σε CurvePoint.
     - Τα keys των ClassPoint είναι πλέον τύπου string, αναλόγως και των καμπυλών.
@@ -51,6 +58,14 @@
     B μέρος (clustering):
 
     Σύντομη περιγραφή:
+
+
+    Defined παράμετροι:
+        Στο cluster_methods.cpp:
+        - MAX_HD - max hamming distance για το hypercube
+        - EPSILON - για το filtering των μεγάλων mean curves
+        - DELTA - για το grid στο lsh frechet
+        - MAX_UPDATES - μέγιστος αριθμός updates των centroid
 
 
     Προσθήκες:
