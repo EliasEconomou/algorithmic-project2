@@ -1,9 +1,12 @@
 #include "../include/cluster_methods.hpp"
 
 #define MAX_HD 6
-#define EPSILON 0.1
+#define EPSILON 0.45
+#define MAX_UPDATES 10
 
 using namespace std;
+
+
 
 
 
@@ -116,7 +119,7 @@ double silhuette(Cluster_of_curves cluster, int i){
 
 
 //---------------------------------------------------------------------------//
-//                 CENTROID FUNCTION USED BY LLOYD'S ALGORYTHM               //
+//                 CENTROID FUNCTION - CALCULATING MEAN VECTOR               //
 //---------------------------------------------------------------------------//
 
 void calculate_centroids(Cluster_of_points &cluster){
@@ -165,7 +168,7 @@ void calculate_centroids(Cluster_of_points &cluster){
 }
 
 //---------------------------------------------------------------------------//
-//           CENTROID FUNCTION USED BY LLOYD'S ALGORYTHM ON CURVES           //
+//                 CENTROID FUNCTION - CALCULATING MEAN CURVE                //
 //---------------------------------------------------------------------------//
 
 void calculate_centroids(Cluster_of_curves &cluster){
@@ -178,9 +181,7 @@ void calculate_centroids(Cluster_of_curves &cluster){
 
     //FOR EVERY CLUSTER OF CURVES
     for (int i = 0 ; i < cluster.centroids.size(); i++ ){
-        cout << endl << "IN CLUSTER : " << i << endl;
         if(cluster.curves[i].curves.size() == 0){
-            cout << endl << "cluster size == 0 - do stuff" << endl << endl; //todo del
             ClassCurve newCurve;
             for (int m = 0; m < cluster.centroids[i].cpoints.size() ; m++)
             {
@@ -762,110 +763,128 @@ Cluster_of_points cluster_LSH(Vector_of_points &Data, Cluster_of_points &cluster
     unordered_map<string,double> PointsInR;
     unordered_map<string,double>::iterator it2;
 
-    // ---CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS--- 
-    double min_dist = MAXFLOAT;
-    for (int i=0 ; i < cluster.centroids.size() ; i++){
-         for (int j=0 ; j < cluster.centroids.size() ; j++){
-            if (i!=j){
-                double dist = distance( cluster.centroids[i].vpoint , cluster.centroids[j].vpoint, 2 );
-                if (dist < min_dist ){
-                    min_dist = dist;
-                }
-            }
-         }
-    }
-    R = min_dist / 2;
+    for (int updates = 0 ; updates < MAX_UPDATES ; updates++){  
 
-    // ---INITIALIZE CLUSTERS / PREALLOCATE STRUCTURES---
-    for (int i = 0 ; i < Data.points.size() ; i++){
-        Data_Found_map.insert(make_pair(Data.points[i].itemID, -1));
-    }
+        stopflag=false;        
+        Data_Found_map.clear();
+        PointsInR.clear();
 
-    int turns_inactive = 0;
-    bool first_action=false;
-    while (!stopflag){
-        bool tookaction=false;
-        //FOR EVERY CENTROID
+
+        // ---CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS--- 
+        double min_dist = MAXFLOAT;
         for (int i=0 ; i < cluster.centroids.size() ; i++){
-
-            PointsInR = lsh_approximate_range_search(cluster.centroids[i], R, hashTables, &hInfo);
-            
-            //FOR ALL POINTS FOUND BY RANGE SEARCH
-            for (it2 = PointsInR.begin(); it2 != PointsInR.end(); it2++){
-                int point_cluster_num = Data_Found_map.find(it2->first)->second;
-                //IF POINT IS NOT YET FOUND, MAP IT TO CLUSTER
-                if ( point_cluster_num == -1){
-                    Data_Found_map.find(it2->first)->second = i;
-                    tookaction=true;
-                    first_action=true;
-                    turns_inactive=0;
-                    continue;
-                }
-                //IF POINT IS FOUND IN ANOTHER CLUSTER, COMPARE DISTANCES FROM CENTROIDS AND KEEP THE ONE WITH THE SMALLEST DISTANCE
-                if ( point_cluster_num != i ){
-                    int point_it = -1;
-                    for (int j = 0 ; j < Data.points.size() ; j++){
-                        if (Data.points[j].itemID == it2->first){
-                            point_it = j;
-                            break;
-                        }
+            for (int j=0 ; j < cluster.centroids.size() ; j++){
+                if (i!=j){
+                    double dist = distance( cluster.centroids[i].vpoint , cluster.centroids[j].vpoint, 2 );
+                    if (dist < min_dist ){
+                        min_dist = dist;
                     }
-                    double min_dist = MAXFLOAT;
-                    if ( distance( Data.points[point_it].vpoint, cluster.centroids[i].vpoint , 2 ) < distance(Data.points[point_it].vpoint, cluster.centroids[point_cluster_num].vpoint , 2 ) ){
-                        it2->second = i;
+                }
+            }
+        }
+        R = min_dist / 2;
+
+        // ---INITIALIZE CLUSTERS / PREALLOCATE STRUCTURES---
+        for (int i = 0 ; i < Data.points.size() ; i++){
+            Data_Found_map.insert(make_pair(Data.points[i].itemID, -1));
+        }
+
+        int turns_inactive = 0;
+        bool first_action=false;
+        while (!stopflag){
+            bool tookaction=false;
+            //FOR EVERY CENTROID
+            for (int i=0 ; i < cluster.centroids.size() ; i++){
+
+                PointsInR = lsh_approximate_range_search(cluster.centroids[i], R, hashTables, &hInfo);
+                
+                //FOR ALL POINTS FOUND BY RANGE SEARCH
+                for (it2 = PointsInR.begin(); it2 != PointsInR.end(); it2++){
+                    int point_cluster_num = Data_Found_map.find(it2->first)->second;
+                    //IF POINT IS NOT YET FOUND, MAP IT TO CLUSTER
+                    if ( point_cluster_num == -1){
+                        Data_Found_map.find(it2->first)->second = i;
                         tookaction=true;
+                        first_action=true;
                         turns_inactive=0;
+                        continue;
                     }
-                }
-            }
-            PointsInR.clear();
-        }
-
-        //CHECKING IF ANY ACTION WAS TAKEN THIS TURN
-        if (!tookaction)turns_inactive++;
-        //CHECKING IF NO POINTS HAVE BEEN ADDED IN 2 ITERATIONS, IF SO STOPPING
-        if (turns_inactive > 1 && first_action)stopflag=true;
-
-        //DOUBLING RANGE FOR EACH ITERATION
-        R *=2;
-        //IF R HAS REACHED MORE THAN 100K STOP
-        if (R > 100000){
-            stopflag=true;
-        }
-    }
-
-    Vector_of_points newvec;
-    for (int i = 0 ; i < cluster.centroids.size() ; i++){
-        cluster.points.push_back(newvec);
-    }
-
-    // ---ARRANGE CLUSTER DATA ACCORDING TO MAP OF IDS TO CLUSTERS---
-    for (it1 = Data_Found_map.begin(); it1 != Data_Found_map.end(); it1++){
-        for (int i=0 ; i < Data.points.size() ; i++){
-            if (it1->first == Data.points[i].itemID){
-                //IF POINT NOT MAPPED TO ANY CLUSTER, FIND CLOSEST CENTROID AND ADD IT TO THAT CLUSTER
-                if (it1->second == -1){
-                    double min_dist = MAXFLOAT;
-                    double dist;
-                    int min_dist_it = -1;
-                    for (int j=0 ; j < cluster.centroids.size() ; j++){
-                        dist = distance( Data.points[i].vpoint , cluster.centroids[j].vpoint, 2 );
-                        if ( dist < min_dist ){
-                            min_dist = dist;
-                            min_dist_it=j;
+                    //IF POINT IS FOUND IN ANOTHER CLUSTER, COMPARE DISTANCES FROM CENTROIDS AND KEEP THE ONE WITH THE SMALLEST DISTANCE
+                    if ( point_cluster_num != i ){
+                        int point_it = -1;
+                        for (int j = 0 ; j < Data.points.size() ; j++){
+                            if (Data.points[j].itemID == it2->first){
+                                point_it = j;
+                                break;
+                            }
+                        }
+                        double min_dist = MAXFLOAT;
+                        if ( distance( Data.points[point_it].vpoint, cluster.centroids[i].vpoint , 2 ) < distance(Data.points[point_it].vpoint, cluster.centroids[point_cluster_num].vpoint , 2 ) ){
+                            it2->second = i;
+                            tookaction=true;
+                            turns_inactive=0;
                         }
                     }
-                    cluster.points[min_dist_it].points.push_back(Data.points[i]);
                 }
-                //OTHERWISE ADD IT TO MAPPED CLUSTER
-                else{
-                    cluster.points[it1->second].points.push_back(Data.points[i]);
+                PointsInR.clear();
+            }
+
+            //CHECKING IF ANY ACTION WAS TAKEN THIS TURN
+            if (!tookaction)turns_inactive++;
+            //CHECKING IF NO POINTS HAVE BEEN ADDED IN 2 ITERATIONS, IF SO STOPPING
+            if (turns_inactive > 1 && first_action)stopflag=true;
+
+            //DOUBLING RANGE FOR EACH ITERATION
+            R *=2;
+            //IF R HAS REACHED MORE THAN 100K STOP
+            if (R > 100000){
+                stopflag=true;
+            }
+        }
+
+        Vector_of_points newvec;
+        for (int i = 0 ; i < cluster.centroids.size() ; i++){
+            cluster.points.push_back(newvec);
+        }
+
+        // ---ARRANGE CLUSTER DATA ACCORDING TO MAP OF IDS TO CLUSTERS---
+        for (it1 = Data_Found_map.begin(); it1 != Data_Found_map.end(); it1++){
+            for (int i=0 ; i < Data.points.size() ; i++){
+                if (it1->first == Data.points[i].itemID){
+                    //IF POINT NOT MAPPED TO ANY CLUSTER, FIND CLOSEST CENTROID AND ADD IT TO THAT CLUSTER
+                    if (it1->second == -1){
+                        double min_dist = MAXFLOAT;
+                        double dist;
+                        int min_dist_it = -1;
+                        for (int j=0 ; j < cluster.centroids.size() ; j++){
+                            dist = distance( Data.points[i].vpoint , cluster.centroids[j].vpoint, 2 );
+                            if ( dist < min_dist ){
+                                min_dist = dist;
+                                min_dist_it=j;
+                            }
+                        }
+                        cluster.points[min_dist_it].points.push_back(Data.points[i]);
+                    }
+                    //OTHERWISE ADD IT TO MAPPED CLUSTER
+                    else{
+                        cluster.points[it1->second].points.push_back(Data.points[i]);
+                    }
                 }
             }
         }
+        calculate_centroids(cluster);
+
+        if (updates < MAX_UPDATES-1){
+            for (int i = 0; i < cluster.centroids.size() ; i++)
+            {
+                cluster.points[i].points.clear();
+            }
+        }
+
     }
     return cluster;
 }
+
 
 //---------------------------------------------------------------------------//
 //           CLUSTER LSH-FRECHET FUNCTION ON CLUSTER OF CURVES               //
@@ -1045,110 +1064,126 @@ Cluster_of_points cluster_Hypercube(Vector_of_points &Data, Cluster_of_points &c
     unordered_map<string,double> PointsInR;
     unordered_map<string,double>::iterator it2;
 
-    //CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS
-    double min_dist = MAXFLOAT;
-    for (int i=0 ; i < cluster.centroids.size() ; i++){
-         for (int j=0 ; j < cluster.centroids.size() ; j++){
-             if (i!=j){
-                double dist = distance( cluster.centroids[i].vpoint , cluster.centroids[j].vpoint, 2 );
-                if (dist < min_dist ){
-                    min_dist = dist;
-                }
-             }
-         }
-    }
-    R = min_dist / 2;
-    
+    for (int updates = 0 ; updates < MAX_UPDATES ; updates++){  
 
-    // ---INITIALIZE CLUSTERS / PREALLOCATE STRUCTURES---
-    for (int i = 0 ; i < Data.points.size() ; i++){
-        Data_Found_map.insert(make_pair(Data.points[i].itemID, -1));
-    }
+    stopflag=false;        
+    Data_Found_map.clear();
+    PointsInR.clear();
 
-    int turns_inactive = 0;
-    bool first_action=false;
-    while (!stopflag){
-        bool tookaction=false;
-        //FOR EVERY CENTROID
+
+        //CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS
+        double min_dist = MAXFLOAT;
         for (int i=0 ; i < cluster.centroids.size() ; i++){
-
-            PointsInR = cube_approximate_range_search(cluster.centroids[i], R, cubeTable, &hInfo);
-            
-            //FOR ALL POINTS FOUND BY RANGE SEARCH
-            for (it2 = PointsInR.begin(); it2 != PointsInR.end(); it2++){
-                int point_cluster_num = Data_Found_map.find(it2->first)->second;
-                //IF POINT IS NOT YET FOUND, MAP IT TO CLUSTER
-                if ( point_cluster_num == -1){
-                    Data_Found_map.find(it2->first)->second = i;
-                    tookaction=true;
-                    first_action=true;
-                    turns_inactive=0;
-                    continue;
-                }
-                //IF POINT IS FOUND IN ANOTHER CLUSTER, COMPARE DISTANCES FROM CENTROIDS AND KEEP THE ONE WITH THE SMALLEST DISTANCE
-                if ( point_cluster_num != i ){
-                    int point_it = -1;
-                    for (int j = 0 ; j < Data.points.size() ; j++){
-                        if (Data.points[j].itemID == it2->first){
-                            point_it = j;
-                            break;
-                        }
-                    }
-                    double min_dist = MAXFLOAT;
-                    if ( distance( Data.points[point_it].vpoint, cluster.centroids[i].vpoint , 2 ) < distance(Data.points[point_it].vpoint, cluster.centroids[point_cluster_num].vpoint , 2 ) ){
-                        it2->second = i;
-                        tookaction=true;
-                        turns_inactive=0;
+            for (int j=0 ; j < cluster.centroids.size() ; j++){
+                if (i!=j){
+                    double dist = distance( cluster.centroids[i].vpoint , cluster.centroids[j].vpoint, 2 );
+                    if (dist < min_dist ){
+                        min_dist = dist;
                     }
                 }
             }
-            PointsInR.clear();
         }
-
-        //CHECKING IF ANY ACTION WAS TAKEN THIS TURN
-        if (!tookaction)turns_inactive++;
+        R = min_dist / 2;
         
-        //CHECKING IF NO POINTS HAVE BEEN ADDED IN 2 ITERATIONS, IF SO STOPPING
-        if (turns_inactive > 1 && first_action)stopflag=true;
 
-        //DOUBLING RANGE FOR EACH ITERATION
-        R *=2;
-
-        //IF R HAS REACHED MORE THAN 100K STOP
-        if (R > 100000){
-            stopflag=true;
+        // ---INITIALIZE CLUSTERS / PREALLOCATE STRUCTURES---
+        for (int i = 0 ; i < Data.points.size() ; i++){
+            Data_Found_map.insert(make_pair(Data.points[i].itemID, -1));
         }
-    }
 
-    Vector_of_points newvec;
-    for (int i = 0 ; i < cluster.centroids.size() ; i++){
-        cluster.points.push_back(newvec);
-    }
+        int turns_inactive = 0;
+        bool first_action=false;
+        while (!stopflag){
+            bool tookaction=false;
+            //FOR EVERY CENTROID
+            for (int i=0 ; i < cluster.centroids.size() ; i++){
 
-    //---ARRANGE CLUSTER DATA ACCORDING TO MAP OF IDS TO CLUSTERS---
-    for (it1 = Data_Found_map.begin(); it1 != Data_Found_map.end(); it1++){
-        for (int i=0 ; i < Data.points.size() ; i++){
-            if (it1->first == Data.points[i].itemID){
-                //IF POINT NOT MAPPED TO ANY CLUSTER, FIND CLOSEST CENTROID AND ADD IT TO THAT CLUSTER
-                if (it1->second == -1){
-                    double min_dist = MAXFLOAT;
-                    double dist;
-                    int min_dist_it = -1;
-                    for (int j=0 ; j < cluster.centroids.size() ; j++){
-                        dist = distance( Data.points[i].vpoint , cluster.centroids[j].vpoint, 2 );
-                        if ( dist < min_dist ){
-                            min_dist = dist;
-                            min_dist_it=j;
+                PointsInR = cube_approximate_range_search(cluster.centroids[i], R, cubeTable, &hInfo);
+                
+                //FOR ALL POINTS FOUND BY RANGE SEARCH
+                for (it2 = PointsInR.begin(); it2 != PointsInR.end(); it2++){
+                    int point_cluster_num = Data_Found_map.find(it2->first)->second;
+                    //IF POINT IS NOT YET FOUND, MAP IT TO CLUSTER
+                    if ( point_cluster_num == -1){
+                        Data_Found_map.find(it2->first)->second = i;
+                        tookaction=true;
+                        first_action=true;
+                        turns_inactive=0;
+                        continue;
+                    }
+                    //IF POINT IS FOUND IN ANOTHER CLUSTER, COMPARE DISTANCES FROM CENTROIDS AND KEEP THE ONE WITH THE SMALLEST DISTANCE
+                    if ( point_cluster_num != i ){
+                        int point_it = -1;
+                        for (int j = 0 ; j < Data.points.size() ; j++){
+                            if (Data.points[j].itemID == it2->first){
+                                point_it = j;
+                                break;
+                            }
+                        }
+                        double min_dist = MAXFLOAT;
+                        if ( distance( Data.points[point_it].vpoint, cluster.centroids[i].vpoint , 2 ) < distance(Data.points[point_it].vpoint, cluster.centroids[point_cluster_num].vpoint , 2 ) ){
+                            it2->second = i;
+                            tookaction=true;
+                            turns_inactive=0;
                         }
                     }
-                    cluster.points[min_dist_it].points.push_back(Data.points[i]);
                 }
-                //OTHERWISE ADD IT TO MAPPED CLUSTER
-                else{
-                    cluster.points[it1->second].points.push_back(Data.points[i]);
+                PointsInR.clear();
+            }
+
+            //CHECKING IF ANY ACTION WAS TAKEN THIS TURN
+            if (!tookaction)turns_inactive++;
+            
+            //CHECKING IF NO POINTS HAVE BEEN ADDED IN 2 ITERATIONS, IF SO STOPPING
+            if (turns_inactive > 1 && first_action)stopflag=true;
+
+            //DOUBLING RANGE FOR EACH ITERATION
+            R *=2;
+
+            //IF R HAS REACHED MORE THAN 100K STOP
+            if (R > 100000){
+                stopflag=true;
+            }
+        }
+
+        Vector_of_points newvec;
+        for (int i = 0 ; i < cluster.centroids.size() ; i++){
+            cluster.points.push_back(newvec);
+        }
+
+        //---ARRANGE CLUSTER DATA ACCORDING TO MAP OF IDS TO CLUSTERS---
+        for (it1 = Data_Found_map.begin(); it1 != Data_Found_map.end(); it1++){
+            for (int i=0 ; i < Data.points.size() ; i++){
+                if (it1->first == Data.points[i].itemID){
+                    //IF POINT NOT MAPPED TO ANY CLUSTER, FIND CLOSEST CENTROID AND ADD IT TO THAT CLUSTER
+                    if (it1->second == -1){
+                        double min_dist = MAXFLOAT;
+                        double dist;
+                        int min_dist_it = -1;
+                        for (int j=0 ; j < cluster.centroids.size() ; j++){
+                            dist = distance( Data.points[i].vpoint , cluster.centroids[j].vpoint, 2 );
+                            if ( dist < min_dist ){
+                                min_dist = dist;
+                                min_dist_it=j;
+                            }
+                        }
+                        cluster.points[min_dist_it].points.push_back(Data.points[i]);
+                    }
+                    //OTHERWISE ADD IT TO MAPPED CLUSTER
+                    else{
+                        cluster.points[it1->second].points.push_back(Data.points[i]);
+                    }
                 }
             }
         }
+        calculate_centroids(cluster);
+        if (updates < MAX_UPDATES-1){
+            for (int i = 0; i < cluster.centroids.size() ; i++)
+            {
+                cluster.points[i].points.clear();
+            }
+        }
+
     }
     return cluster;
 }
