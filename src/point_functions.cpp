@@ -273,7 +273,11 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 {
     int c1size = c1.cpoints.size();
     int c2size = c2.cpoints.size();
-    double L[c1size][c2size];
+
+    double** L = new double*[c1size];
+    for (int i = 0; i < c1size; i++) {
+        L[i] = new double[c2size];
+    }
 
     for (int i = 0; i < c1size; i++)
     {
@@ -301,19 +305,27 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
             }
         }
     }
-    return L[c1size-1][c2size-1];
+    double dist = L[c1size-1][c2size-1];
 
-
+    for(int i=0; i<c1size; i++)
+        delete [] L[i];   
+    delete [] L;
+    return dist;
 
 }
 
 
-list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
-    // cout << "FINDING OPTIMAL TRAVERSAL" << endl;
+list<pair<int,int>> FindOptimalTraversal(ClassCurve c1, ClassCurve c2){
     int c1size = c1.cpoints.size();
     int c2size = c2.cpoints.size();
-    double L[c1size][c2size];
+    
+    // Let's allocate a 2D array cause sizes can be extremely large.
+    double** L = new double*[c1size];
+    for (int i = 0; i < c1size; i++) {
+        L[i] = new double[c2size];
+    }
 
+    // First, compute the dynamic programming array from discrete frechet distance.
     for (int i = 0; i < c1size; i++)
     {
         for (int j = 0; j < c2size; j++)
@@ -326,11 +338,11 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
             }
             else if (i==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[0][j-1]);
+                L[i][j] = max(distance(c1point,c2point,2),L[i][j-1]);
             }
             else if (j==0)
             {
-                L[i][j] = max(distance(c1point,c2point,2),L[i-1][0]);
+                L[i][j] = max(distance(c1point,c2point,2),L[i-1][j]);
             }
             else
             {
@@ -345,8 +357,10 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
     int Pi,Qi;
     Pi = c1size-1;
     Qi = c2size-1;
+    
     OptimalTraversal.push_front( make_pair(Pi,Qi) );
-
+    
+    // Find and keep the optimal traversal.
     while (Pi != 0 && Qi != 0){
         int min_value_index;
         bool min_value_flag = min(L[Pi-1][Qi],L[Pi][Qi-1]) == L[Pi-1][Qi];
@@ -371,18 +385,20 @@ list<pair<int,int>> FindOptimalTraversal( ClassCurve c1, ClassCurve c2 ){
             OptimalTraversal.push_front( make_pair(--Pi,--Qi) );
         }
     }
+    for(int i=0; i<c1size; i++)
+        delete [] L[i];   
+    delete [] L;
 
     return OptimalTraversal;
 }
 
 ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
-    // cout << "CALCULATING MEAN2CURVES" << endl;
+    cout << "CALCULATING MEAN2CURVES" << endl;
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
-    //int traversalSize = OptimalTraversal.size();
     cout << "opt-size : " << OptimalTraversal.size() << endl;
 
-    // list<pair<int,int>>::iterator it;
+    // Pop from optimal traversal, compute mid point and add it to mid-curve.
     while (OptimalTraversal.size() > 0)
     {
         pair<int,int> Current_pair;
@@ -400,7 +416,8 @@ ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
         newPoint.vpoint[1] = (c1.cpoints[Current_pair.first].vpoint[1] + c2.cpoints[Current_pair.second].vpoint[1]) / 2;
         newPoint.vpoint.push_back(value);
 
-        newPoint.itemID = "0";
+        //as always "0" is added as key to every new point/curve created.
+        newPoint.itemID = "0"; 
 
         Mean.cpoints.push_back(newPoint);
     }

@@ -59,8 +59,8 @@ class Cluster_of_points //class to implement clusters easier
 class Cluster_of_curves //class to implement clusters easier
 {
     public:
-    std::vector<ClassCurve> centroids; //vector of centroid points
-    std::vector<Vector_of_curves> curves; //vector of points in each cluster
+    std::vector<ClassCurve> centroids; //vector of centroid curves
+    std::vector<Vector_of_curves> curves; //vector of curves in each cluster
 };
 
 
@@ -94,10 +94,10 @@ Vector_of_curves curve_parsing(std::string fileName, int dim);
 // Compute discrete frechet distance between curves.
 double discrete_frechet_distance (ClassCurve c1, ClassCurve c2);
 
-// blah
+// Returns the optimal traversal between two curves.
 std::list<std::pair<int,int>> FindOptimalTraversal( ClassCurve curve1, ClassCurve curve2 );
 
-//blah
+// Return the mean of two curves.
 ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 );
 
 // Parse dataset and return a vector of dataset's vectors.

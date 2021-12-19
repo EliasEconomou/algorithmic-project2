@@ -13,7 +13,7 @@ EXEC = cluster.out
 # -assignment <Classic or LSH or Hypercube or LSH_Frechet>
 
 
-ARGS = -i ../../nasd_input.csv -c ../../cluster.conf -o ../../outputFile -update Mean_Frechet -assignment Classic -complete
+ARGS = -i ../../nasd_input.csv -c ../../cluster.conf -o ../../outputFile -update Mean_Frechet -assignment Classic
 
 $(EXEC): $(OBJS) $(LIBS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(EXEC) $(LDFLAGS)
