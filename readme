@@ -68,9 +68,9 @@
         - MAX_HD - max hamming distance για το hypercube
         - EPSILON - για το filtering των μεγάλων mean curves
         - DELTA - για το grid στο lsh frechet
-        - MAX_UPDATES - μέγιστος αριθμός updates των centroid
         - MAX_LSH_PADDING - μέγιστο padding που θα γίνει στις καμπύλες στο clustering lsh frechet
-
+        - MAX_UPDATES - μέγιστος αριθμός updates των centroid
+        - MIN_STOP_UPDATE_DISTANCE 15 // minimum distance of all old centroids to new centroids to continue updating ( note: for Frechet only )
 
     Παρατηρήσεις επί των αποτελεσμάτων:
 

@@ -3,8 +3,9 @@
 #define MAX_HD 6 //max hamming distance used in hypercube
 #define EPSILON 0.45 //epsilon for filtering
 #define DELTA 1 //delta for snapping on grid
+#define MAX_LSH_PADDING 1500 //padding for lsh frechet two make equal sized curves
 #define MAX_UPDATES 10 //max updates of cluster centroids
-#define MAX_LSH_PADDING 1500; //padding for lsh frechet two make equal sized curves
+#define MIN_STOP_UPDATE_DISTANCE 15 // minimum distance of all old centroids to new centroids to continue updating ( note: for Frechet only )
 
 using namespace std;
 
@@ -1058,7 +1059,7 @@ Cluster_of_curves cluster_LSH_Frechet(Vector_of_curves &Data, Cluster_of_curves 
             total_distance += dist;
         }
 
-        if (total_distance < 10 ){
+        if (total_distance < MIN_STOP_UPDATE_DISTANCE ){
             break;
         }
 
