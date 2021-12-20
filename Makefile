@@ -12,12 +12,6 @@ programs: $(addprefix programs-, $(PROGRAMS))
 tests:
 	$(MAKE) -C tests all
 
-# Run all programs
-run: run-programs
-
-run-programs-%:
-	$(MAKE) -C programs/$* run
-
 run-programs: $(addprefix run-programs-, $(PROGRAMS))
 
 run-tests:

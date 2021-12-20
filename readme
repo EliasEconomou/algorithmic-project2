@@ -124,6 +124,7 @@
         |Makefile
 
 
+|cluster.conf
 |nasd_input.csv
 |nasd_query.csv
 |readme
