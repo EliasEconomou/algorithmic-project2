@@ -7,7 +7,7 @@ using namespace std;
 // Returns w
 int compute_w(void)
 {
-    return 600;
+    return 800;
 }
 
 

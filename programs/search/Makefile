@@ -19,10 +19,10 @@ EXEC = search.out
 # ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Hypercube
 #---------------------------------------#
     # Aii) DISCRETE FRECHET
-# ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.0 -nobrute
+ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 4 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric discrete -delta 1.0
 #---------------------------------------#
     # Aiii) CONTINUOUS FRECHET
-ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 1.0 -nobrute
+# ARGS = -i ../../nasd_input.csv -q ../../nasd_query.csv -k 4 -L 1 -M 100 -probes 10 -o ../../outputFile -algorithm Frechet -metric continuous -delta 1.0 -nobrute
 #----------------------------------------------------------------------------#
 
 $(EXEC): $(OBJS) $(LIBS)
