@@ -5,7 +5,7 @@
 #define DELTA 1 //delta for snapping on grid
 #define MAX_LSH_PADDING 1500 //padding for lsh frechet two make equal sized curves
 #define MAX_UPDATES 10 //max updates of cluster centroids
-#define MIN_STOP_UPDATE_DISTANCE 15 // minimum distance of all old centroids to new centroids to continue updating ( note: for Frechet only )
+#define MIN_STOP_UPDATE_DISTANCE 10 // minimum distance of all old centroids to new centroids to continue updating ( note: for Frechet only )
 
 using namespace std;
 
@@ -560,7 +560,7 @@ Cluster_of_points lloyds(Vector_of_points &Data, Cluster_of_points &cluster, int
 
 Cluster_of_curves lloyds(Vector_of_curves &Data, Cluster_of_curves &cluster, int iter_num_input){
     
-    int iter_num = iter_num_input;
+    int iter_num = MAX_UPDATES ;
     vector<ClassCurve> Old_Centroids;
     // ---Manually preallocating the vectors to load iteams without problems---
     Vector_of_curves current_cluster;
@@ -1058,7 +1058,7 @@ Cluster_of_curves cluster_LSH_Frechet(Vector_of_curves &Data, Cluster_of_curves 
             dist = discrete_frechet_distance( Old_Centroids[i], cluster.centroids[i]);
             total_distance += dist;
         }
-
+    
         if (total_distance < MIN_STOP_UPDATE_DISTANCE ){
             break;
         }
