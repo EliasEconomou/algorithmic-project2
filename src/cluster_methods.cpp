@@ -1,14 +1,12 @@
 #include "../include/cluster_methods.hpp"
 
-#define MAX_HD 6
-#define EPSILON 0.45
-#define DELTA 1
-#define MAX_UPDATES 30
-#define MAX_LSH_PADDING 1500;
+#define MAX_HD 6 //max hamming distance used in hypercube
+#define EPSILON 0.45 //epsilon for filtering
+#define DELTA 1 //delta for snapping on grid
+#define MAX_UPDATES 10 //max updates of cluster centroids
+#define MAX_LSH_PADDING 1500; //padding for lsh frechet two make equal sized curves
 
 using namespace std;
-
-
 
 
 
@@ -174,7 +172,7 @@ void calculate_centroids(Cluster_of_points &cluster){
 //---------------------------------------------------------------------------//
 
 void calculate_centroids(Cluster_of_curves &cluster){
-    // std::cout << "CALCULATING CENTROIDS" << endl;
+
     vector<ClassCurve> new_centroids;
     vector<double> sum_of_dimention;
     int centroid_count = cluster.centroids.size();
@@ -458,7 +456,6 @@ Cluster_of_curves initialize_kplusplus(Vector_of_curves &Data, Cluster_of_curves
     for (int i=0 ; i < Kplusplus.Centroids.size() ; i++){
         cluster.centroids.push_back( Kplusplus.Centroids[i] );
     }
-    // cout << "kplusplus finished " << endl;
     return cluster;
 }
 
@@ -940,8 +937,6 @@ Cluster_of_curves cluster_LSH_Frechet(Vector_of_curves &Data, Cluster_of_curves 
         stopflag=false;        
         Data_Found_map.clear();
         CurvesInR.clear();
-
-
 
 
         // ---CALCULATING STARTING RANGE OF RANGE SEARCH AS HALF OF MINIMUM DISTANCE BETWEEN CENTROIDS--- 

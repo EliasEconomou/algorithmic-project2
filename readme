@@ -5,7 +5,7 @@
                         
 
 
-    Α μέρος (nearest neighbor):
+    Α μέρος (nearest neighbor)
 
     Σύντομη περιγραφή:
     - Το main πρόγραμμα search αφού διαβάσει τα arguments καλεί, ανάλογα με τον algorithm και τη method που δόθηκαν, την αντίστοιχη συνάρτηση
@@ -55,9 +55,12 @@
 
 
 
-    B μέρος (clustering):
+    B μέρος (clustering)
 
     Σύντομη περιγραφή:
+
+
+    Προσθήκες:
 
 
     Defined παράμετροι:
@@ -66,9 +69,7 @@
         - EPSILON - για το filtering των μεγάλων mean curves
         - DELTA - για το grid στο lsh frechet
         - MAX_UPDATES - μέγιστος αριθμός updates των centroid
-
-
-    Προσθήκες:
+        - MAX_LSH_PADDING - μέγιστο padding που θα γίνει στις καμπύλες στο clustering lsh frechet
 
 
     Παρατηρήσεις επί των αποτελεσμάτων:
@@ -80,31 +81,29 @@
 
 
 Β) 
-    Αρχεία κώδικα:
+    Αρχεία κώδικα (δομή):
 
-ΔΟΜΗ:
-
-|>include                
-        -   -   -   -
+>include                
+        *.hpp
 
 
-|>programs
-        -   -   -   -
+>programs
+        >search
+                |search.cpp
+                |Makefile
+        >cluster
+                |cluster.cpp
+                |Makefile
 
 
-|>src
-        -   -   -   -
+>src
+        *.cpp
 
 
-
+|nasd_input.csv
+|nasd_query.csv
 |readme
-
-
-
-ΠΕΡΙΓΡΑΦΗ:
-
-
-
+|Makefile
 
 
 
@@ -115,7 +114,13 @@
 Γ)
     Οδηγίες μεταγλώττισης:
                         
-                -Χρήση <make> στο κοινό Makefile του αρχικού καταλόγου ή ξεχωριστά σε κάθε program.
+                -Χρήση <make> στο κοινό Makefile του αρχικού καταλόγου 
+                ή ξεχωριστά σε κάθε program:
+                    <cd programs/search>
+                        <make>
+                και
+                    <cd programs/cluster>
+                        <make>
 
 
 
@@ -129,8 +134,8 @@
                 -Χρήση <make clean> για καθάρισμα των παραγόμενων αρχείων.
                 -Χρήση <make run> στον κατάλογο του κάθε program για εκτέλεση με προκαθορισμένα arguments στη main.
                 -Χρήση <make valgrind> στον κατάλογο του κάθε program για εκτέλεση με εμφάνιση memory leaks.
-                            
-                
+    
+    *Παραδείγματα ενδεικτικών εκτελέσεων - main arguments βρίσκονται και στο Makefile (σχολιασμένα) του εκάστοτε προγράμματος.
 
 
 
@@ -143,5 +148,7 @@ E)
                     
                     Ηλίας Οικονόμου - 1115201200133
                     Κωνσταντίνος Αντζουλίδης - 1115201500009
-                        
 
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------

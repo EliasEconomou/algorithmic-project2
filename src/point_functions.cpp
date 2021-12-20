@@ -262,13 +262,12 @@ Vector_of_curves curve_parsing(string fileName, int dim){
         }
     }
     
-    
-    
     file.close();
     return data;
 }
 
 
+// Compute discrete frechet distance between curves.
 double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 {
     int c1size = c1.cpoints.size();
@@ -315,6 +314,7 @@ double discrete_frechet_distance (ClassCurve c1, ClassCurve c2)
 }
 
 
+// Returns the optimal traversal between two curves.
 list<pair<int,int>> FindOptimalTraversal(ClassCurve c1, ClassCurve c2){
     int c1size = c1.cpoints.size();
     int c2size = c2.cpoints.size();
@@ -392,10 +392,11 @@ list<pair<int,int>> FindOptimalTraversal(ClassCurve c1, ClassCurve c2){
     return OptimalTraversal;
 }
 
+
+// Return the mean of two curves.
 ClassCurve Mean2Curves( ClassCurve c1, ClassCurve c2 ){
     list<pair<int,int>> OptimalTraversal = FindOptimalTraversal(c1,c2);
     ClassCurve Mean;
-    // cout << "opt-size : " << OptimalTraversal.size() << endl;
 
     // Pop from optimal traversal, compute mid point and add it to mid-curve.
     while (OptimalTraversal.size() > 0)
