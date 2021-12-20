@@ -1,5 +1,16 @@
 
-#include "acutest.h"
+#include "../include/acutest.h"
+#include "../include/point_functions.hpp"
+
+void test_inner_prod(void)
+{
+    std::vector<double> v1 = {3.0, 3.7, 12.1};
+    std::vector<double> v2 = {6.2, 1.7, 0.65};
+    double result = inner_prod(v1,v2);
+    TEST_CHECK(result == 32.755);
+}
+
+
 
 void
 test_tutorial(void)
@@ -73,9 +84,10 @@ test_crash(void)
 }
 
 TEST_LIST = {
-    { "tutorial", test_tutorial },
-    { "fail",     test_fail },
-    { "abort",    test_abort },
-    { "crash",    test_crash },
+    { "inner_prod",     test_inner_prod },
+    { "tutorial",       test_tutorial },
+    { "fail",           test_fail },
+    { "abort",          test_abort },
+    { "crash",          test_crash },
     { NULL, NULL }
 };
