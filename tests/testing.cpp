@@ -7,89 +7,10 @@
 #include "../include/algorithms.hpp"
 
 
-void test_inner_prod(void)
-{
-    std::vector<double> v1 = {3.0, 3.7, 12.1};
-    std::vector<double> v2 = {6.2, 1.7, 0.65};
-    double result = inner_prod(v1,v2);
-    TEST_CHECK(result == 32.755);
-}
-
-
-
-void
-test_tutorial(void)
-{
-    void* mem;
-
-    mem = malloc(10);
-    TEST_CHECK(mem != NULL);
-
-    mem = realloc(mem, 20);
-    TEST_CHECK(mem != NULL);
-
-    free(mem);
-}
-
-void
-test_fail(void)
-{
-    int a, b;
-
-    /* This condition is designed to fail so you can see what the failed test
-     * output looks like. */
-    a = 1;
-    b = 2;
-    TEST_CHECK(a + b == 5);
-
-    /* Here is TEST_CHECK_ in action. */
-    TEST_CHECK_(a + b == 5, "%d + %d == 5", a, b);
-
-    /* We may also show more information about the failure. */
-    if(!TEST_CHECK(a + b == 5)) {
-        TEST_MSG("a: %d", a);
-        TEST_MSG("b: %d", b);
-    }
-
-    /* The macro TEST_MSG() only outputs something when the preceding
-     * condition fails, so we can avoid the 'if' statement. */
-    TEST_CHECK(a + b == 3);
-    TEST_MSG("a: %d", a);
-    TEST_MSG("b: %d", b);
-}
-
-static void
-helper(void)
-{
-    /* Kill the current test with a condition which is never true. */
-    TEST_ASSERT(1 == 2);
-
-    /* This never happens because the test is aborted above. */
-    TEST_CHECK(1 + 2 == 2 + 1);
-}
-
-void
-test_abort(void)
-{
-    helper();
-
-    /* This test never happens because the test is aborted inside the helper()
-     * function. */
-    TEST_CHECK(1 * 2 == 2 * 1);
-}
-
 void cluster_LSH_test(void);
 void cluster_Classic_Curves_test(void);
 void cluster_Classic_test(void);
 void cluster_Hypercube_test(void);
-
-TEST_LIST = {
-    { "Inner Product",     test_inner_prod },
-    { "Cluster Classic" , cluster_Classic_test }, 
-    { "Cluster LSH" , cluster_LSH_test },
-    { "Cluster Hypercube" , cluster_Hypercube_test },                          
-    { NULL, NULL }
-};
 
 
 void cluster_Classic_test(void){
@@ -251,3 +172,11 @@ void cluster_Hypercube_test(void){
 
     TEST_CHECK( counter > 6 );
 }
+
+
+TEST_LIST = {
+    { "Cluster Classic" , cluster_Classic_test }, 
+    { "Cluster LSH" , cluster_LSH_test },
+    { "Cluster Hypercube" , cluster_Hypercube_test },                          
+    { NULL, NULL }
+};
